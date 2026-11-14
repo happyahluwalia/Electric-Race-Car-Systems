@@ -77,15 +77,18 @@ Separate views make it easier to reason about:
 
 A block diagram is a learning abstraction. Actual power, signal and safety paths must be confirmed against the chosen hardware and vehicle documentation.
 
-### 4. Live teaching simulator
+### 4. Signal tracing
+Follow three representative paths through the vehicle: accelerator pedal to motor torque, cell voltage to BMS fault reporting, and IMD trip to hardwired shutdown. Each stage explains its interface and responsibility and links to the relevant component dossier. These are functional learning sequences, not a pin-accurate wiring netlist.
+
+### 5. Live teaching simulator
 Change accelerator and brake inputs and inject representative faults: APPS channel disagreement, cell overvoltage, BMS CAN heartbeat timeout, IMD insulation fault and BSPD trip.
 
 Observe the model's validation, safety state, torque authorization, torque request and derived motor quantities. Values and thresholds are illustrative; the simulator is deterministic and is **not a validated plant model, ECU implementation or vehicle calibration**.
 
-### 5. CAN network lab
+### 6. CAN network lab
 Explore selected identifiers from a public USC Formula SAE VCU protocol header. The lab intentionally leaves payload bytes undecoded where the public source does not provide an authoritative signal definition. A CAN ID and DLC alone do not tell you start bit, length, signedness, endianness, scale, offset, units or timeout policy.
 
-### 6. Public engineering reference library
+### 7. Public engineering reference library
 The application links to real repositories, design reports and official resources. Read the original source before treating a detail as authoritative. The application distinguishes a source's documented facts from the synthetic vehicle's teaching abstractions.
 
 ## Reference implementations and source provenance
