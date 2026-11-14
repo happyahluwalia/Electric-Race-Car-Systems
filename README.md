@@ -93,7 +93,7 @@ Change synthetic cell voltage and temperature, inject packet-integrity, freshnes
 Adjust redundant APPS channels, brake input, BMS permission, CAN freshness, shutdown continuity and inverter readiness. Follow the software pipeline from ADC/GPIO acquisition through validation, state machine, torque arbitration and CAN diagnostics. Task timing and torque are illustrative.
 
 ### 9. DBC decoder
-Load or paste a DBC, select a message and decode raw hexadecimal bytes using signal start bit, length, byte order, signedness, factor and offset. The built-in sample is synthetic. The in-browser parser supports basic BO_/SG_ definitions only; it does not implement multiplexing, value tables, extended-ID conventions or all DBC attributes. Use a mature library such as cantools for production workflows and verify against the authoritative protocol.
+Load or paste a DBC, select a message and decode raw hexadecimal bytes using signal start bit, length, byte order, signedness, factor and offset. The built-in sample is synthetic. The in-browser parser supports basic BO_/SG_ definitions, little-endian and Motorola big-endian bit extraction, signed two's-complement values, scaling and offsets. It does not implement multiplexing, value tables, extended-ID conventions, floating-point signals or all DBC attributes. A Node test suite covers the supported parsing and decoding cases. Use a mature library such as cantools for production workflows and verify against the authoritative protocol.
 
 ### 10. Public ECU connector pinout study
 Browse the published 48-position external connector pin map from the separate [lflaherty/ev-ecu hardware project](https://github.com/lflaherty/ev-ecu/blob/master/hardware/Pinout.md). Filter connector banks A–D, search pin descriptions and inspect documented signal types and firmware usage. This is a real source-specific case study, not a universal connector standard or SJSU pinout. The original [schematic PDF](https://github.com/lflaherty/ev-ecu/blob/master/hardware/ECU_Schematic_Print.pdf) and [hardware notes](https://github.com/lflaherty/ev-ecu/blob/master/hardware/README.md) are linked alongside the pin detail. Never use a pin label alone as a wiring instruction.
@@ -153,8 +153,9 @@ Requirements: a current Node.js LTS release and npm.
     npm install
     npm run dev
 
-Create a production build and preview it locally:
+Run the DBC parser unit tests and create a production build:
 
+    npm test
     npm run build
     npm run preview
 
@@ -174,7 +175,7 @@ The Vercel project is configured for the repository's Vite application. A push t
 
 ## Known limitations and next engineering steps
 
-This project is an evolving educational explorer, not a finished digital twin. The vehicle and assembly 3D scenes are simplified teaching geometry; they are not detailed CAD, scale packaging models or harness-accurate netlists. The functional net explorer is not a connector/pin-level electrical schematic. The DBC editor parses a useful subset of standard BO_/SG_ declarations but is not a full DBC implementation. The simulator and powertrain workbench are deterministic and use illustrative values rather than measured vehicle data.
+This project is an evolving educational explorer, not a finished digital twin. The vehicle and assembly 3D scenes are simplified teaching geometry; they are not detailed CAD, scale packaging models or harness-accurate netlists. The functional net explorer is not a connector/pin-level electrical schematic. The DBC editor parses a useful subset of standard BO_/SG_ declarations but is not a full DBC implementation. Its supported parsing and bit extraction are unit-tested; the production build runs these tests before bundling. The simulator and powertrain workbench are deterministic and use illustrative values rather than measured vehicle data.
 
 Next development priorities:
 1. Replace schematic blocks with detailed, clearly named 3D component assemblies and exploded subassemblies.
