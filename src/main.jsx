@@ -2,7 +2,7 @@ import React,{Suspense,useState}from'react';
 import{createRoot}from'react-dom/client';
 import{Canvas}from'@react-three/fiber';
 import{OrbitControls,Line,ContactShadows,Html}from'@react-three/drei';
-import{Activity,AlertTriangle,BatteryCharging,BookOpen,Cable,CheckCircle2,ChevronRight,CircleDot,CircuitBoard,GitBranch,Info,Layers3,Radio,RotateCcw,ShieldCheck,Zap}from'lucide-react';
+import{Activity,AlertTriangle,BatteryCharging,BookOpen,Cable,CheckCircle2,ChevronRight,CircleDot,CircuitBoard,Code2,FileCode,GitBranch,Info,Layers3,Radio,RotateCcw,ShieldCheck,Zap}from'lucide-react';
 import{components,references,canFrames}from'./data';
 import{ElectricalNetExplorer,BmsWorkbench,VcuWorkbench,DbcWorkbench,AssemblyExplorer,EngineeringLabs}from'./learning';
 import'./style.css';
