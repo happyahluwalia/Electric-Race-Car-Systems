@@ -150,7 +150,7 @@ The Vercel project is configured for the repository's Vite application. A push t
 
 ## Known limitations and next engineering steps
 
-This project is an evolving educational explorer, not a finished digital twin. The current 3D vehicle is a simplified schematic scene; it is not detailed CAD geometry, a scale packaging model or a harness-accurate netlist. The simulator is deterministic and uses illustrative values rather than measured vehicle data.
+This project is an evolving educational explorer, not a finished digital twin. The vehicle and assembly 3D scenes are simplified teaching geometry; they are not detailed CAD, scale packaging models or harness-accurate netlists. The functional net explorer is not a connector/pin-level electrical schematic. The DBC editor parses a useful subset of standard BO_/SG_ declarations but is not a full DBC implementation. The simulator is deterministic and uses illustrative values rather than measured vehicle data.
 
 Next development priorities:
 1. Replace schematic blocks with detailed, clearly named 3D component assemblies and exploded subassemblies.
