@@ -98,18 +98,21 @@ Load or paste a DBC, select a message and decode raw hexadecimal bytes using sig
 ### 10. Public ECU connector pinout study
 Browse the published 48-position external connector pin map from the separate [lflaherty/ev-ecu hardware project](https://github.com/lflaherty/ev-ecu/blob/master/hardware/Pinout.md). Filter connector banks A–D, search pin descriptions and inspect documented signal types and firmware usage. This is a real source-specific case study, not a universal connector standard or SJSU pinout. The original [schematic PDF](https://github.com/lflaherty/ev-ecu/blob/master/hardware/ECU_Schematic_Print.pdf) and [hardware notes](https://github.com/lflaherty/ev-ecu/blob/master/hardware/README.md) are linked alongside the pin detail. Never use a pin label alone as a wiring instruction.
 
-### 11. Engineering labs
+### 11. Inverter and motor workbench
+Explore a synthetic torque-speed envelope with DC-link voltage, torque request, motor speed, temperature, efficiency and torque-constant inputs. The workbench calculates a constant-torque / constant-power limit, simple thermal derating, shaft power, estimated phase current and DC-bus current. A chart shows the operating point against the illustrative torque-speed curve. It is a transparent first-order teaching model, not a validated motor/inverter plant model.
+
+### 12. Engineering labs
 Explore a first-order precharge RC response and the torque-speed mechanical power equation. Fault-diagnosis cases test reasoning about message freshness, CAN physical layers and precharge evidence. These are teaching aids, not component-selection or safety tools.
 
-### 12. Live teaching simulator
+### 13. Live teaching simulator
 Change accelerator and brake inputs and inject representative faults: APPS channel disagreement, cell overvoltage, BMS CAN heartbeat timeout, IMD insulation fault and BSPD trip.
 
 Observe the model's validation, safety state, torque authorization, torque request and derived motor quantities. Values and thresholds are illustrative; the simulator is deterministic and is **not a validated plant model, ECU implementation or vehicle calibration**.
 
-### 13. CAN network lab
+### 14. CAN network lab
 Explore selected identifiers from a public USC Formula SAE VCU protocol header. The lab intentionally leaves payload bytes undecoded where the public source does not provide an authoritative signal definition. A CAN ID and DLC alone do not tell you start bit, length, signedness, endianness, scale, offset, units or timeout policy.
 
-### 14. Public engineering reference library
+### 15. Public engineering reference library
 The application links to real repositories, design reports and official resources. Read the original source before treating a detail as authoritative. The application distinguishes a source's documented facts from the synthetic vehicle's teaching abstractions.
 
 ## Reference implementations and source provenance
@@ -171,7 +174,7 @@ The Vercel project is configured for the repository's Vite application. A push t
 
 ## Known limitations and next engineering steps
 
-This project is an evolving educational explorer, not a finished digital twin. The vehicle and assembly 3D scenes are simplified teaching geometry; they are not detailed CAD, scale packaging models or harness-accurate netlists. The functional net explorer is not a connector/pin-level electrical schematic. The DBC editor parses a useful subset of standard BO_/SG_ declarations but is not a full DBC implementation. The simulator is deterministic and uses illustrative values rather than measured vehicle data.
+This project is an evolving educational explorer, not a finished digital twin. The vehicle and assembly 3D scenes are simplified teaching geometry; they are not detailed CAD, scale packaging models or harness-accurate netlists. The functional net explorer is not a connector/pin-level electrical schematic. The DBC editor parses a useful subset of standard BO_/SG_ declarations but is not a full DBC implementation. The simulator and powertrain workbench are deterministic and use illustrative values rather than measured vehicle data.
 
 Next development priorities:
 1. Replace schematic blocks with detailed, clearly named 3D component assemblies and exploded subassemblies.
