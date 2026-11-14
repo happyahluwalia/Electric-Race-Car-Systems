@@ -80,15 +80,33 @@ A block diagram is a learning abstraction. Actual power, signal and safety paths
 ### 4. Signal tracing
 Follow three representative paths through the vehicle: accelerator pedal to motor torque, cell voltage to BMS fault reporting, and IMD trip to hardwired shutdown. Each stage explains its interface and responsibility and links to the relevant component dossier. These are functional learning sequences, not a pin-accurate wiring netlist.
 
-### 5. Live teaching simulator
+### 5. Electrical net explorer
+Inspect representative functional paths for tractive DC power, three-phase motor output, cell sensing, redundant APPS, BMS CAN, independent shutdown and low-voltage distribution. Select a path to inspect its source, destination, signal type, engineering role and limitations. This is not a connector/pin-level harness drawing.
+
+### 6. 3D assembly explorer
+Orbit and inspect schematic exploded assemblies for the accumulator, inverter and traction motor. Select cell groups, monitor PCB, busbars, DC-link capacitors, power modules, gate-driver PCB, rotor, stator and resolver. The main vehicle view also automatically focuses and zooms toward a selected component. Geometry is educational, not manufacturing CAD.
+
+### 7. BMS deep dive
+Change synthetic cell voltage and temperature, inject packet-integrity, freshness and open-wire faults, and inspect the chain from cell taps through monitor IC, isolated link, BMS master, fault policy and vehicle interface. Limits are illustrative.
+
+### 8. VCU software workbench
+Adjust redundant APPS channels, brake input, BMS permission, CAN freshness, shutdown continuity and inverter readiness. Follow the software pipeline from ADC/GPIO acquisition through validation, state machine, torque arbitration and CAN diagnostics. Task timing and torque are illustrative.
+
+### 9. DBC decoder
+Load or paste a DBC, select a message and decode raw hexadecimal bytes using signal start bit, length, byte order, signedness, factor and offset. The built-in sample is synthetic. The in-browser parser supports basic BO_/SG_ definitions only; it does not implement multiplexing, value tables, extended-ID conventions or all DBC attributes. Use a mature library such as cantools for production workflows and verify against the authoritative protocol.
+
+### 10. Engineering labs
+Explore a first-order precharge RC response and the torque-speed mechanical power equation. Fault-diagnosis cases test reasoning about message freshness, CAN physical layers and precharge evidence. These are teaching aids, not component-selection or safety tools.
+
+### 11. Live teaching simulator
 Change accelerator and brake inputs and inject representative faults: APPS channel disagreement, cell overvoltage, BMS CAN heartbeat timeout, IMD insulation fault and BSPD trip.
 
 Observe the model's validation, safety state, torque authorization, torque request and derived motor quantities. Values and thresholds are illustrative; the simulator is deterministic and is **not a validated plant model, ECU implementation or vehicle calibration**.
 
-### 6. CAN network lab
+### 12. CAN network lab
 Explore selected identifiers from a public USC Formula SAE VCU protocol header. The lab intentionally leaves payload bytes undecoded where the public source does not provide an authoritative signal definition. A CAN ID and DLC alone do not tell you start bit, length, signedness, endianness, scale, offset, units or timeout policy.
 
-### 7. Public engineering reference library
+### 13. Public engineering reference library
 The application links to real repositories, design reports and official resources. Read the original source before treating a detail as authoritative. The application distinguishes a source's documented facts from the synthetic vehicle's teaching abstractions.
 
 ## Reference implementations and source provenance
