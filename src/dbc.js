@@ -57,6 +57,7 @@ export function decodeSignal(signal, bytes) {
     raw: raw.toString(),
     rawNumber,
     physical,
+    value: physical,
     precisionWarning: !Number.isSafeInteger(rawNumber)
   };
 }
