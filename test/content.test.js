@@ -38,7 +38,7 @@ test('rules, cases and decisions are sourced', () => {
     }
     if (c.firmware) {
       for (const s of c.firmware.steps) {
-        assert.ok(c.firmware.principle || (s.sources && s.sources.length), `${c.id}: firmware step "${s.title}" needs sources`);
+        assert.ok(c.firmware.principle || s.principle || (s.sources && s.sources.length), `${c.id}: firmware step "${s.title}" needs sources or principle:true`);
         (s.sources || []).forEach(known);
       }
     }

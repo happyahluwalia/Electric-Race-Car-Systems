@@ -247,9 +247,23 @@ export const enrich = {
     ],
     cases: [
       { team: 'Columbia EV21', text: 'Cascadia Motion PM100DX, chosen for its "reliability".', source: 'columbiaEv21' },
-      { team: 'lflaherty/ev-ecu', text: 'The first CAN bus on the ECU connector is reserved for an inverter using the Cascadia Motion protocol.', source: 'evEcu' }
+      { team: 'lflaherty/ev-ecu', text: 'The first CAN bus on the ECU connector is reserved for an inverter using the Cascadia Motion protocol, and one 24 V power output channel switches the inverter\'s low-voltage supply.', source: 'evEcu' },
+      { team: 'USC', text: 'The motor controller task sends a free-roll command (all zeros) whenever the car is not in drive, a pedal check has failed, or the inverter\'s fault status is older than 250 ms or non-zero.', source: 'uscVcu' }
     ],
-    labs: ['powertrain', 'assemblies'],
+    firmware: {
+      intro: 'What a VCU driver for a Cascadia Motion inverter does, as implemented in two public Formula SAE firmwares. Both talk to the same message set: the inverter broadcasts its state on identifiers 0x0A0 to 0x0AD and listens for one command on 0x0C0. Confirm every layout against the manufacturer\'s protocol document for your firmware version.',
+      steps: [
+        { title: '1. Filter in the broadcast set', body: 'Register a hardware filter for the inverter\'s identifier range and push accepted frames onto a queue. The driver rejects any frame whose length is not 8 before it touches the payload.', sources: ['evEcu'] },
+        { title: '2. Decode with the right scale', body: 'Fields are little-endian 16-bit values. Temperatures (0x0A0 to 0x0A2), currents (0x0A6), voltages (0x0A7), motor angle and electrical frequency (0x0A5) and torque (0x0AC) are all in tenths; flux is in thousandths of a weber; speed is a plain signed rpm. Phase currents are signed, temperatures unsigned.', code: 'temperature_C = u16 / 10      current_A = i16 / 10\nvoltage_V     = u16 / 10      torque_Nm = u16 / 10\nflux_Wb       = u16 / 1000    speed_rpm = (int16_t) u16', sources: ['evEcu'] },
+        { title: '3. Treat 0x0AB as the verdict', body: 'The fault frame carries two 32-bit one-hot words: power-on self-test faults and run faults. USC keeps a timestamped snapshot of the last one; the status counts as safe only if it is younger than 250 ms and both words are zero. ev-ecu maps an inverter CAN timeout to its own fault code 0x00000001 and an inverter fault message to 0x00800000.', sources: ['uscVcu', 'evEcu'] },
+        { title: '4. Build the 0x0C0 command', body: 'Eight bytes: signed torque in 0.1 Nm, signed speed (unused in torque mode), a direction byte, a flag byte (bit 0 enable, bit 1 discharge, bit 2 speed mode) and a torque limit in 0.1 Nm where 0 means "use the limits stored in the inverter". Try it in the inverter CAN lab.', code: '12.5 Nm forward, enabled:\n7D 00 | 00 00 | 01 | 01 | 00 00\ntorque  speed  dir  flags  limit', sources: ['evEcu'] },
+        { title: '5. Clear the enable lockout', body: 'After power-up the inverter refuses to enable until it has seen a disable command. ev-ecu therefore sends a frame with torque 0 and enable 0 immediately before the first enable; its own state machine must have called enable before any torque command is accepted.', sources: ['evEcu'] },
+        { title: '6. Never go quiet', body: 'USC re-sends the command at least every 100 ms even when the value is unchanged, limits how fast the torque request may rise per cycle, and publishes an all-zero free-roll command instead of nothing whenever torque is not allowed. The inverter treats a missing command the way a good driver treats a missing status: as a fault.', sources: ['uscVcu'] },
+        { title: '7. Keep discharge and enable apart', body: 'Discharge mode bleeds the DC-link capacitors through the inverter. ev-ecu refuses to enter it while the inverter is enabled and clears the enabled flag when it does, because torque output and active discharge are mutually exclusive.', sources: ['evEcu'] },
+        { title: '8. Cut the supply as the last resort', body: 'If the controller itself is in doubt (hard fault, watchdog, brown-out) ev-ecu\'s special fault handler switches off the inverter\'s power channel and asserts the shutdown output by writing to the hardware directly, bypassing every driver layer.', sources: ['evEcu'] }
+      ]
+    },
+    labs: ['powertrain', 'assemblies', 'inverterframe'],
     inside: 'inverter'
   },
 
@@ -294,7 +308,17 @@ export const enrich = {
     cases: [
       { team: 'Columbia EV21', text: 'Emrax 208 motor, with the gear ratio to the differential chosen from battery voltage and target top speed.', source: 'columbiaEv21' }
     ],
-    labs: ['powertrain', 'assemblies'],
+    firmware: {
+      intro: 'The motor has no firmware of its own; the inverter runs the current loops. What the vehicle controller must still know and watch about the motor.',
+      steps: [
+        { title: '1. Read the motor\'s own telemetry', body: 'The inverter reports motor temperature (0x0A2, tenths of a degree), rotor angle, speed and electrical frequency (0x0A5). The controller decodes these the same way as every other inverter frame and timestamps them.', sources: ['evEcu'] },
+        { title: '2. Treat motor temperature as a drive fault', body: 'ev-ecu lists "motor above allowable temperature" as drive fault 0x00100000 with a configurable limit, alongside IGBT and inverter internal temperature. Its own notes say thermal throttling should come before the trip but is not yet implemented.', sources: ['evEcu'] },
+        { title: '3. Derate before you trip', body: 'A permanent-magnet motor loses magnet strength with heat and can be damaged permanently. Reduce the torque limit progressively as temperature approaches the limit so the driver feels a soft loss of power, not a sudden cut. The rules only allow algorithms to reduce requested torque, never add to it.', sources: ['fsae2027'], },
+        { title: '4. Calibrate the position sensor offset', body: 'Field-oriented control needs the electrical angle of the rotor. The offset between the resolver\'s zero and the magnetic axis is set once during commissioning, in the inverter, with the motor spinning freely. A wrong offset shows up as high current for little torque, or torque in the wrong direction. Keep that value under version control with the rest of the inverter configuration.', principle: true },
+        { title: '5. Remember it is also a generator', body: 'A spinning permanent-magnet motor produces voltage with the inverter off. The isolation relays, discharge circuit and status lights must assume the DC link can be live whenever the car is rolling, which is one reason the rules require the motors to spin free, with no torque, once the shutdown circuit opens.', sources: ['fsae2027'] }
+      ]
+    },
+    labs: ['powertrain', 'assemblies', 'inverterframe'],
     inside: 'motor'
   },
 
@@ -842,8 +866,21 @@ export const enrich = {
       }
     ],
     cases: [
-      { team: 'Columbia EV21', text: 'A 300 W liquid and air system intended to keep inverter, motor and batteries "well below the required 60C".', source: 'columbiaEv21' }
+      { team: 'Columbia EV21', text: 'A 300 W liquid and air system intended to keep inverter, motor and batteries "well below the required 60C".', source: 'columbiaEv21' },
+      { team: 'USC', text: 'A cooling task reads two coolant thermistors, before and after the radiator, every 2 s. The published version logs the temperatures; pump and fan control are not in that task.', source: 'uscVcu' },
+      { team: 'lflaherty/ev-ecu', text: 'Pumps and fans are switched through the ECU\'s 24 V power distribution channels; the PDM module is a thin layer over GPIO that also records each channel\'s state.', source: 'evEcu' }
     ],
+    firmware: {
+      intro: 'What a cooling task does, built from one published task and the control problem it leaves open.',
+      steps: [
+        { title: '1. Sample the thermistors', body: 'USC reads two NTC thermistors on ADC channels, one before the radiator and one after, every 2 seconds, from a shared ADC snapshot that reports whether the conversion succeeded.', sources: ['uscVcu'] },
+        { title: '2. Turn volts into ohms', body: 'The thermistor is the lower leg of a divider from a 5 V reference. USC\'s divider uses a 14 666 Ω upper resistor, so R = 14666 × V ÷ (5 − V).', code: 'R_thermistor = 14666 * V / (5 - V)', sources: ['uscVcu'] },
+        { title: '3. Turn ohms into degrees with a table', body: 'An NTC curve is not linear. USC interpolates a ten-point resistance-to-temperature table (10 000 Ω at 25 °C, 2 490 Ω at 60 °C, 338 Ω at 120 °C) rather than solving the Steinhart-Hart equation on every sample.', code: '332776 Ω → −40 °C   10000 Ω → 25 °C\n  2490 Ω →  60 °C     338 Ω → 120 °C', sources: ['uscVcu'] },
+        { title: '4. Recognise a broken sensor', body: 'An open thermistor reads as the top of the table and a shorted one as the bottom. Both are physically unlikely in a running car and should be flagged as sensor faults rather than acted on as real temperatures.', principle: true },
+        { title: '5. Decide what the pump and fans do', body: 'With motor, inverter and coolant temperatures in hand, the policy is usually: pump on whenever high voltage is active, fans staged by coolant temperature, and torque derated as the hottest component approaches its limit. The published USC task does not yet close this loop; ev-ecu provides the switched 24 V channels to do it.', sources: ['uscVcu', 'evEcu'] },
+        { title: '6. Feed the watchdog', body: 'The cooling task sets its bit in the independent watchdog event group every cycle, like every other task. A hung cooling task is caught the same way as a hung torque task.', sources: ['uscVcu'] }
+      ]
+    },
     labs: ['powertrain']
   },
 

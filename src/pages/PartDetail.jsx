@@ -49,6 +49,7 @@ function Firmware({ fw }) {
           <p><T>{s.body}</T></p>
           {s.code && <pre>{s.code}</pre>}
           {s.sources && <SourceLinks ids={s.sources} />}
+          {s.principle && <p className="basis"><span>Based on</span>General engineering reasoning. No part-specific figures are claimed.</p>}
         </article>
       ))}
     </>

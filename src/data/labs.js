@@ -9,6 +9,7 @@ export const labs = [
   { id: 'vcu', name: 'VCU firmware pipeline', blurb: 'From ADC sample to torque command, with every reason torque can be refused.', group: 'Control' },
   { id: 'simulation', name: 'Whole-car fault simulator', blurb: 'Drive the pedal, inject faults, and watch what each system does.', group: 'Control' },
   { id: 'pinout', name: 'A real ECU connector', blurb: 'All 48 pins of an open-source Formula SAE ECU.', group: 'Control' },
+  { id: 'inverterframe', name: 'Talk to the inverter over CAN', blurb: 'Build the Cascadia torque command byte by byte, decode its broadcast frames, and see why a stale frame means free roll.', group: 'Communication' },
   { id: 'dbc', name: 'DBC decoder', blurb: 'Paste a DBC, type raw bytes, and decode signals bit by bit.', group: 'Communication' },
   { id: 'can', name: 'CAN identifiers from a real car', blurb: 'Why an identifier alone tells you nothing about the payload.', group: 'Communication' },
   { id: 'nets', name: 'Interface map', blurb: 'What crosses each boundary between subsystems.', group: 'Communication' }

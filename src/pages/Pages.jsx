@@ -9,11 +9,12 @@ import { components } from '../data/components.js';
 const wb = name => lazy(() => import('../labs/workbenches.jsx').then(m => ({ default: m[name] })));
 const lg = name => lazy(() => import('../labs/legacy.jsx').then(m => ({ default: m[name] })));
 const bt = name => lazy(() => import('../labs/battery-labs.jsx').then(m => ({ default: m[name] })));
+const cn = name => lazy(() => import('../labs/can-labs.jsx').then(m => ({ default: m[name] })));
 const labComponents = {
   pack: bt('PackLab'), frame: bt('FrameLab'), bms: wb('BmsWorkbench'), precharge: wb('EngineeringLabs'),
   powertrain: wb('PowertrainWorkbench'), assemblies: wb('AssemblyExplorer'), vcu: wb('VcuWorkbench'),
   simulation: lg('Simulation'), pinout: wb('EcuPinoutExplorer'), dbc: wb('DbcWorkbench'), can: lg('CanLab'),
-  nets: wb('ElectricalNetExplorer')
+  nets: wb('ElectricalNetExplorer'), inverterframe: cn('InverterFrameLab')
 };
 
 export function Labs() {

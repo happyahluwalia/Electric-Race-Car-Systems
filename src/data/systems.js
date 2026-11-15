@@ -48,7 +48,7 @@ export const systems = [
       'Gate drivers are the bridge between 3.3 V logic and switches sitting hundreds of volts away.'
     ],
     parts: ['dcLink', 'gateDriver', 'inverter', 'resolver', 'motor'],
-    labs: ['powertrain', 'assemblies'],
+    labs: ['powertrain', 'assemblies', 'inverterframe'],
     sources: []
   },
   {
@@ -82,7 +82,7 @@ export const systems = [
       'Each link is chosen for its job: CAN for robustness between boxes, SPI on a board, isoSPI across an isolation barrier.'
     ],
     parts: ['cancontroller', 'cantransceiver', 'can', 'cellmonitor', 'dashboard'],
-    labs: ['dbc', 'can', 'frame'],
+    labs: ['dbc', 'can', 'inverterframe', 'frame'],
     sources: ['sloa101']
   },
   {

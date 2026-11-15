@@ -223,3 +223,4 @@
 
 .legacy .section-head{display:block}
 .legacy .section-head h1{margin:6px 0}
+.lab-range input[type=text]{background:#0b1928;border:1px solid #35516c;border-radius:5px;color:#e4f0fa;padding:8px 10px;font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.06em}
