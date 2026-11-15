@@ -49,3 +49,46 @@ test('rejects signal extraction beyond available payload', () => {
   const signal = { start: 60, length: 16, littleEndian: true, signed: false, factor: 1, offset: 0 };
   assert.equal(decodeSignal(signal, [0, 0, 0, 0, 0, 0, 0, 0]), null);
 });
+
+// Real file from commaai/opendbc (MIT). Cell voltages are multiplexed three per frame.
+import { readFileSync } from 'node:fs';
+import { presentSignals, encodeSignal } from '../src/lib/dbc.js';
+const gm = parseDbc(readFileSync(new URL('../src/data/dbc/gm_global_a_high_voltage_management.dbc', import.meta.url), 'utf8'));
+
+test('parses the opendbc GM high-voltage DBC including multiplexed signals', () => {
+  const m1 = gm.find(m => m.id === 512);
+  assert.equal(m1.name, 'Battery_Module_1');
+  assert.equal(m1.signals.length, 25);
+  const sel = m1.signals.find(s => s.mux === 'M');
+  assert.equal(sel.name, 'Cell_Bank_Number_1');
+  assert.equal(m1.signals.filter(s => s.mux === 3).length, 3);
+  assert.equal(m1.signals[0].factor, 0.00125);
+});
+
+test('encode then decode round-trips, and only the selected bank is present', () => {
+  const m1 = gm.find(m => m.id === 512);
+  const sig = n => m1.signals.find(s => s.name === n);
+  let b = [0, 0, 0, 0, 0, 0, 0, 0];
+  b = encodeSignal(sig('Cell_Bank_Number_1'), 2, b);
+  b = encodeSignal(sig('Voltage_1_2_A'), 3.7, b);
+  b = encodeSignal(sig('Voltage_1_2_B'), 3.69875, b);
+  b = encodeSignal(sig('Voltage_1_2_C'), 4.1, b);
+  assert.equal(decodeSignal(sig('Voltage_1_2_A'), b).physical, 3.7);
+  assert.ok(Math.abs(decodeSignal(sig('Voltage_1_2_C'), b).physical - 4.1) < 1e-9);
+  const present = presentSignals(m1, b).filter(s => s.present).map(s => s.name);
+  assert.deepEqual(present.sort(), ['Cell_Bank_Number_1', 'Voltage_1_2_A', 'Voltage_1_2_B', 'Voltage_1_2_C']);
+});
+
+test('signed little-endian and offset signals encode correctly', () => {
+  const t = gm.find(m => m.id === 770).signals.find(s => s.name === 'Temp_A');
+  assert.equal(decodeSignal(t, encodeSignal(t, 25, [0, 0, 0, 0, 0, 0, 0, 0])).physical, 25);
+  const i = gm.find(m => m.id === 528).signals.find(s => s.name === 'Pack_Current');
+  assert.ok(Math.abs(decodeSignal(i, encodeSignal(i, -5, [0, 0, 0, 0, 0, 0, 0, 0])).physical - -5) < 1e-9);
+});
+
+import { parseValueTables } from '../src/lib/dbc.js';
+test('value tables give names to enumerated values', () => {
+  const v = parseValueTables(readFileSync(new URL('../src/data/dbc/gm_global_a_high_voltage_management.dbc', import.meta.url), 'utf8'));
+  assert.equal(v['782:Command'][3], '12V_and_HV');
+  assert.equal(v['776:Status'][0], 'Off');
+});

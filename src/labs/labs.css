@@ -224,3 +224,37 @@
 .legacy .section-head{display:block}
 .legacy .section-head h1{margin:6px 0}
 .lab-range input[type=text]{background:#0b1928;border:1px solid #35516c;border-radius:5px;color:#e4f0fa;padding:8px 10px;font:13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.06em}
+
+/* comma.ai labs */
+.why{background:#0f2133;border:1px solid #2a4057;border-left:4px solid #79bce9;border-radius:9px;padding:14px 18px;margin:0 0 14px;max-width:980px}
+.why h2{font:600 16px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;margin:0 0 8px;color:#e4f0fa}
+.why li{font-size:14px;line-height:1.65;color:#bcd0e2;margin:4px 0}
+.learn-card.wide{margin-top:13px}
+.btnrow{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.btnrow svg,.learn-card button svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.gatechart{width:100%;height:auto;background:#0a1928;border-radius:6px;margin:8px 0}
+.gatechart .lim{stroke:#ef6f76;stroke-dasharray:4 4;stroke-width:1}
+.gatechart .zero{stroke:#35516c;stroke-width:1}
+.gatechart text{fill:#ef6f76;font:11px ui-monospace,Menlo,monospace}
+.gatechart .req{fill:none;stroke:#9fb3c6;stroke-width:1.5;stroke-dasharray:5 4}
+.gatechart .cmd{fill:none;stroke:#f0a44b;stroke-width:2.2}
+.gatechart .blocked{fill:#ef6f76;opacity:.35}
+.legend2{font-size:12px;color:#89a5bf;display:inline-flex;gap:10px;align-items:center}
+.legend2 i{display:inline-block;width:16px;height:3px;margin-right:3px;vertical-align:middle}
+.legend2 .req{border-top:2px dashed #9fb3c6}.legend2 .cmd{background:#f0a44b}.legend2 .blk{background:#ef6f76;opacity:.6;height:10px;width:6px}
+.small{font-size:12px!important;color:#89a5bf}
+.tries li{font-size:14px;line-height:1.65;color:#bcd0e2;margin:8px 0}
+.tries em{color:#89a5bf}
+.maptable{display:grid;gap:0;font-size:13.5px}
+.maptable>div{display:grid;grid-template-columns:1.2fr 1.2fr 1fr;gap:12px;padding:8px 0;border-bottom:1px solid #263d53;color:#bcd0e2}
+.maptable>.head b{color:#e4f0fa;font-size:12px;letter-spacing:.4px;text-transform:uppercase}
+.rigor li{font-size:14px;line-height:1.65;color:#bcd0e2;margin:6px 0}
+.rigor code,.why code,.learn-card code{font:12.5px ui-monospace,Menlo,monospace;background:#0a1928;padding:1px 5px;border-radius:4px;color:#cfe4f7}
+.decoded-table .sel b{color:#79bce9}
+.bitgrid{display:grid;gap:2px;font:11px ui-monospace,Menlo,monospace;margin:10px 0}
+.bitgrid>div{display:grid;grid-template-columns:52px repeat(8,1fr);gap:2px}
+.bitgrid span{background:#0a1928;color:#89a5bf;text-align:center;padding:5px 0;border-radius:3px;min-height:14px}
+.bitgrid .hdr span{background:none}
+.verdict.right b{color:#58cda7}
+details summary{cursor:pointer;color:#79bce9;font-size:13px}
+@media (max-width:960px){.maptable>div{grid-template-columns:1fr}.maptable>.head{display:none}}

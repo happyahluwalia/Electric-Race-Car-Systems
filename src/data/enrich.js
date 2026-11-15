@@ -448,6 +448,7 @@ export const enrich = {
     cases: [
       { team: 'Virginia Motorsports', text: 'Teensy 4.1 running FreeRTOS. A cell outside 3.00 to 4.23 V, stale data, a failed error check or an insulation fault sets a latched register that firmware never clears; only a physical reset does.', source: 'vmsBms' },
       { team: 'Columbia EV21', text: 'Custom modular BMS, built to be "more robust and easily integratable", which also controls the isolation relays.', source: 'columbiaEv21' },
+      { team: 'GM (via opendbc)', text: 'A production battery energy control module reports cells three at a time, 12 bits each at 1.25 mV per bit, cycling a 3-bit bank number: one message identifier covers 24 cells.', source: 'opendbc' },
       { team: 'USC', text: 'An Orion BMS on the shared vehicle CAN bus.', source: 'uscVcu' }
     ],
     firmware: {
@@ -528,9 +529,10 @@ export const enrich = {
     ],
     cases: [
       { team: 'lflaherty/ev-ecu', text: 'STM32 F7 ECU on a 24 V supply with three CAN buses, a six-channel power distribution stage and layered firmware: vehicle logic, vehicle interface, device drivers, peripheral drivers.', source: 'evEcu' },
-      { team: 'USC', text: 'STM32 VCU using FreeRTOS, with one task per vehicle component sharing a common data structure.', source: 'uscVcu' }
+      { team: 'USC', text: 'STM32 VCU using FreeRTOS, with one task per vehicle component sharing a common data structure.', source: 'uscVcu' },
+      { team: 'comma.ai (road cars)', text: 'openpilot clamps its own torque commands in Python, then a separate microcontroller re-checks every message in C and blocks any that break the limits, the rate limit, or the driver override. Controls drop on a brake press, a cruise disengage, or five bad message counters.', source: 'opendbcSafety' }
     ],
-    labs: ['vcu', 'simulation', 'pinout']
+    labs: ['vcu', 'safetygate', 'simulation', 'pinout']
   },
 
   apps: {
@@ -712,13 +714,14 @@ export const enrich = {
           { name: 'Hard-code the byte positions', pros: 'Quick for one message.', cons: 'Every node and tool must agree by hand. Mistakes in byte order or scaling are silent.' },
           { name: 'A DBC file', pros: 'One description of every message: identifier, bit position, length, byte order, scale, offset and unit. Code and logging tools are generated from it.', cons: 'Has to be kept current and shared.' }
         ],
-        takeaway: 'An identifier and eight bytes mean nothing without the database. Never guess a layout from a message name.',
-        sources: ['cssDbc']
+        takeaway: 'An identifier and eight bytes mean nothing without the database. Never guess a layout from a message name. When no DBC exists, it is built by recording the bus while changing one thing at a time; that is how much of comma.ai\'s opendbc collection was made.',
+        sources: ['cssDbc', 'opendbc', 'cabana']
       }
     ],
     cases: [
       { team: 'USC', text: 'One CAN bus at 500 kbit/s. Outgoing messages go through queues handled by a single task; a separate task processes incoming frames.', source: 'uscVcu' },
-      { team: 'lflaherty/ev-ecu', text: 'Three buses on the ECU connector: one for the inverter, one for the BMS and a spare provisioned for the dashboard.', source: 'evEcu' }
+      { team: 'lflaherty/ev-ecu', text: 'Three buses on the ECU connector: one for the inverter, one for the BMS and a spare provisioned for the dashboard.', source: 'evEcu' },
+      { team: 'comma.ai opendbc', text: 'A public collection of DBC files for production cars, much of it reverse-engineered by the community. One describes a GM battery energy control module that sends three cell voltages per frame, multiplexed by a bank number.', source: 'opendbc' }
     ],
     firmware: {
       intro: 'What every receiving node does with a frame.',
@@ -730,7 +733,7 @@ export const enrich = {
         { title: '4. Validate', body: 'Check the range, and check the frame is arriving at its expected period. A missing heartbeat is a fault even if the last value looked fine.' }
       ]
     },
-    labs: ['dbc', 'can']
+    labs: ['dbc', 'reverse', 'can']
   },
 
   cancontroller: {

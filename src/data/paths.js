@@ -36,7 +36,8 @@ export const paths = [
       { kind: 'lab', id: 'bms', why: 'Inject stale data and open wires and watch the supervisor react.' },
       { kind: 'journey', id: 'cellfault', why: 'From one bad reading to an open pack.' },
       { kind: 'part', id: 'shutdown', why: 'Your fault output is one contact in this loop.' },
-      { kind: 'part', id: 'packcurrent', why: 'Current sensing for state of charge and protection.' }
+      { kind: 'part', id: 'packcurrent', why: 'Current sensing for state of charge and protection.' },
+      { kind: 'lab', id: 'dbc', why: 'Read a production battery module\'s CAN messages, including multiplexed cell voltages.' }
     ]
   },
   {
@@ -53,6 +54,8 @@ export const paths = [
       { kind: 'lab', id: 'dbc', why: 'Decode signals bit by bit.' },
       { kind: 'part', id: 'inverter', why: 'The Cascadia driver walkthrough.' },
       { kind: 'lab', id: 'inverterframe', why: 'Build the 0x0C0 torque command and decode the broadcasts.' },
+      { kind: 'lab', id: 'safetygate', why: 'How production firmware refuses bad torque commands, with real limits from comma.ai.' },
+      { kind: 'lab', id: 'reverse', why: 'Find an undocumented signal the way opendbc contributors do.' },
       { kind: 'journey', id: 'pedal', why: 'The whole chain, end to end.' },
       { kind: 'lab', id: 'simulation', why: 'Inject faults and see which system reacts.' }
     ]

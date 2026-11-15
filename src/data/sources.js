@@ -218,6 +218,37 @@ export const sources = {
     url: 'https://www.freertos.org/FAQWhat.html',
     checked: '2026-11-15'
   },
+  opendbc: {
+    title: 'commaai/opendbc: DBC files, CAN library and safety firmware (README, opendbc/dbc/)',
+    org: 'comma.ai',
+    kind: 'Open-source production code',
+    url: 'https://github.com/commaai/opendbc',
+    checked: '2026-11-15',
+    note: 'MIT licence. Read at commit 27fa1c5 (7 Nov 2026). The GM high-voltage DBC used in the decoder lab is copied unchanged from opendbc/dbc/. It is community reverse-engineered, not a manufacturer document.'
+  },
+  opendbcSafety: {
+    title: 'opendbc safety firmware: safety.h, lateral.h, modes/hyundai.h and tests/common.py',
+    org: 'comma.ai',
+    kind: 'Open-source production code',
+    url: 'https://github.com/commaai/opendbc/tree/master/opendbc/safety',
+    checked: '2026-11-15',
+    note: 'Figures used (Hyundai mode): max torque 384, rate up 3 and down 7 per frame, 112 per 250 ms window, driver allowance 50 with multiplier 2, controls dropped after 5 wrong counters, on a brake rising edge, or when cruise disengages.'
+  },
+  openpilotSafety: {
+    title: 'openpilot safety (docs/SAFETY.md)',
+    org: 'comma.ai',
+    kind: 'Vendor documentation',
+    url: 'https://github.com/commaai/openpilot/blob/master/docs/SAFETY.md',
+    checked: '2026-11-15',
+    note: 'States that the driver must always be able to retake control immediately, and that the vehicle must not change trajectory too quickly for the driver to react.'
+  },
+  cabana: {
+    title: 'Cabana: CAN analysis tool (openpilot wiki)',
+    org: 'comma.ai',
+    kind: 'Tool documentation',
+    url: 'https://github.com/commaai/openpilot/wiki/Cabana',
+    checked: '2026-11-15'
+  },
   columbiaGh: {
     title: 'Columbia FSAE software repositories',
     org: 'columbia-fsae',

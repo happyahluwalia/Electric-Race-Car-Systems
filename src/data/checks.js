@@ -97,6 +97,8 @@ export const checks = {
   vcu: [
     Q('When does the APPS/brake plausibility check cut motor power?',
       ['Brake on and accelerator over 25% travel', 'Brake on and accelerator over 5%', 'Any brake application', 'Accelerator over 90%'], 0, 'EV.4.7.1 and EV.4.7.2. Power stays off until the pedal is back below 5%.'),
+    Q('In comma.ai\'s safety firmware, what happens to a torque command that breaks the rate limit?',
+      ['It is reduced to the nearest allowed value', 'It is blocked, and the firmware\'s memory of the last torque resets to zero', 'It is delayed by one frame', 'It is logged and sent anyway'], 1, 'The gate never edits a command. The main computer must clamp its own commands; the firmware only refuses.'),
     Q('What three conditions are needed to enter Ready to Drive?',
       ['Tractive system active, brake pressed and held, and a manual driver action', 'Low voltage on and a CAN heartbeat', 'Pedal at 0% and the precharge done', 'A green status light and the master switch'], 0, 'EV.10.6.2.')
   ],
@@ -127,6 +129,8 @@ export const checks = {
   can: [
     Q('How does CAN decide which node transmits when two start at once?',
       ['Round robin', 'By identifier, without losing data', 'The faster node wins', 'Both retry after a random delay'], 1, 'Bitwise arbitration on the identifier.'),
+    Q('In the GM battery DBC, Battery_Module_1 carries only three cell voltages. How does one identifier cover 24 cells?',
+      ['It is sent at 8 times the rate', 'A 3-bit bank number selects which three cells are in the frame (multiplexing)', 'Each cell gets its own identifier', 'CAN FD carries 64 bytes'], 1, 'The receiver must read the bank number before trusting the voltages.'),
     Q('A frame arrives with identifier 0x0A7 and eight bytes. What do you need to turn it into volts?',
       ['Nothing, CAN frames are self-describing', 'The message definition: bit positions, byte order, scale and offset, usually from a DBC', 'The bus speed', 'The sender\'s serial number'], 1, 'An identifier and eight bytes mean nothing without the database.')
   ],

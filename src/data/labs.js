@@ -8,9 +8,11 @@ export const labs = [
   { id: 'assemblies', name: 'Look inside', blurb: 'Exploded 3D views of the battery pack, inverter and motor.', group: 'High voltage' },
   { id: 'vcu', name: 'VCU firmware pipeline', blurb: 'From ADC sample to torque command, with every reason torque can be refused.', group: 'Control' },
   { id: 'simulation', name: 'Whole-car fault simulator', blurb: 'Drive the pedal, inject faults, and watch what each system does.', group: 'Control' },
+  { id: 'safetygate', name: 'The safety gate (from comma.ai)', blurb: 'A small firmware layer that blocks bad torque commands. Real limits and logic ported from openpilot\'s safety code.', group: 'Control' },
   { id: 'pinout', name: 'A real ECU connector', blurb: 'All 48 pins of an open-source Formula SAE ECU.', group: 'Control' },
   { id: 'inverterframe', name: 'Talk to the inverter over CAN', blurb: 'Build the Cascadia torque command byte by byte, decode its broadcast frames, and see why a stale frame means free roll.', group: 'Communication' },
-  { id: 'dbc', name: 'DBC decoder', blurb: 'Paste a DBC, type raw bytes, and decode signals bit by bit.', group: 'Communication' },
+  { id: 'dbc', name: 'Decode a real battery\'s CAN messages', blurb: 'A GM battery module DBC from opendbc: multiplexed cell voltages, value tables, Intel and Motorola layouts.', group: 'Communication' },
+  { id: 'reverse', name: 'Find a signal nobody documented', blurb: 'Watch which bits flip, guess a layout, and check it against what you did. The method behind opendbc.', group: 'Communication' },
   { id: 'can', name: 'CAN identifiers from a real car', blurb: 'Why an identifier alone tells you nothing about the payload.', group: 'Communication' },
   { id: 'nets', name: 'Interface map', blurb: 'What crosses each boundary between subsystems.', group: 'Communication' }
 ];

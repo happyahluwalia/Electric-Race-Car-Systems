@@ -259,3 +259,4 @@ code, pre { font-family: var(--mono); }
 .verdict.right b { color: #58cda7; } .verdict.wrong b { color: #ef6f76; }
 .linkbtn { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; padding: 0 0 0 6px; }
 @media (max-width: 960px) { .tabs { position: static; } }
+.labbar span a { text-decoration: underline; text-underline-offset: 3px; }

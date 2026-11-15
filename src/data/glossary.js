@@ -24,6 +24,8 @@ export const glossary = [
   ['isoSPI', 'Analog Devices\' isolated two-wire version of SPI, used between battery monitor boards.'],
   ['LV', 'Low voltage. 60 V DC or less.'],
   ['MCU', 'Microcontroller.'],
+  ['MISRA', 'MISRA C: a coding standard for safety-related C that bans constructs likely to hide bugs. Checked with static analysis tools.'],
+  ['multiplexing', 'Sending different signals in the same CAN message at different times, with a selector value saying which set this frame carries.'],
   ['NTC', 'Negative temperature coefficient thermistor. Its resistance falls as it warms.'],
   ['PDM', 'Power distribution module. Electronic replacement for a fuse box.'],
   ['PEC', 'Packet error code. The CRC used by Analog Devices battery monitors.'],

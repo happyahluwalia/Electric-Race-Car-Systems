@@ -36,3 +36,10 @@ test('the arithmetic in self-check answers holds', () => {
   assert.ok(Math.abs(0x80e8 * 100e-6 - 3.3) < 1e-9);
   assert.ok(Math.abs(1 - Math.exp(-2.3) - 0.9) < 0.002);
 });
+
+test('reverse-engineering lab: the synthetic pedal field matches the DBC line it teaches', async () => {
+  const { parseDbc, decodeSignal } = await import('../src/lib/dbc.js');
+  const sig = parseDbc('BO_ 929 Pedal: 8 X\n SG_ PedalPosition : 19|12@0+ (0.1,0) [0|100] "%" X')[0].signals[0];
+  const p = 620; const b = [0, 0x20, (p >> 8) & 0x0f, p & 0xff, 0, 0, 0x7a, 0];
+  assert.ok(Math.abs(decodeSignal(sig, b).physical - 62) < 1e-9);
+});

@@ -8,13 +8,16 @@ export function parseDbc(source) {
       messages.push(current);
       continue;
     }
-    const signal = line.match(/^\s*SG_\s+(\w+)(?:\s+\w+)?\s*:\s*(\d+)\|(\d+)@([01])([+-])\s*\(([-+\deE.]+),\s*([-+\deE.]+)\)\s*\[([^|]+)\|([^\]]+)\]\s*"([^"]*)"/);
+    const signal = line.match(/^\s*SG_\s+(\w+)(?:\s+(M|m\d+))?\s*:\s*(\d+)\|(\d+)@([01])([+-])\s*\(([-+\deE.]+),\s*([-+\deE.]+)\)\s*\[([^|]+)\|([^\]]+)\]\s*"([^"]*)"/);
     if (signal && current) {
       current.signals.push({
-        name: signal[1], start: Number(signal[2]), length: Number(signal[3]),
-        littleEndian: signal[4] === '1', signed: signal[5] === '-',
-        factor: Number(signal[6]), offset: Number(signal[7]),
-        min: signal[8], max: signal[9], unit: signal[10]
+        name: signal[1],
+        // multiplexing: 'M' marks the selector signal; mN means "only present when the selector is N"
+        mux: signal[2] === 'M' ? 'M' : signal[2] ? Number(signal[2].slice(1)) : null,
+        start: Number(signal[3]), length: Number(signal[4]),
+        littleEndian: signal[5] === '1', signed: signal[6] === '-',
+        factor: Number(signal[7]), offset: Number(signal[8]),
+        min: signal[9], max: signal[10], unit: signal[11]
       });
     }
   }
@@ -60,4 +63,46 @@ export function decodeSignal(signal, bytes) {
     value: physical,
     precisionWarning: !Number.isSafeInteger(rawNumber)
   };
+}
+
+// Which signals of a message are actually present in this frame. Plain signals always
+// are; a multiplexed signal mN only when the selector signal (M) currently reads N.
+export function presentSignals(message, bytes) {
+  const selector = message.signals.find(s => s.mux === 'M');
+  const sel = selector ? decodeSignal(selector, bytes) : null;
+  const value = sel ? sel.rawNumber : null;
+  return message.signals.map(s => ({ ...s, present: s.mux === null || s.mux === 'M' || s.mux === value, selectorValue: value }));
+}
+
+// Inverse of decodeSignal: write a physical value into a byte array (used to build
+// example payloads from the DBC itself, so the bytes and the decoder cannot disagree).
+export function encodeSignal(signal, physical, bytes) {
+  let raw = BigInt(Math.round((physical - signal.offset) / signal.factor));
+  if (raw < 0n) raw += 1n << BigInt(signal.length);
+  const out = [...bytes];
+  if (signal.littleEndian) {
+    for (let i = 0; i < signal.length; i += 1) {
+      const bit = signal.start + i, b = Math.floor(bit / 8), m = 1 << (bit % 8);
+      out[b] = Number((raw >> BigInt(i)) & 1n) ? out[b] | m : out[b] & ~m;
+    }
+  } else {
+    let bit = signal.start;
+    for (let i = signal.length - 1; i >= 0; i -= 1) {
+      const b = Math.floor(bit / 8), m = 1 << (bit % 8);
+      out[b] = Number((raw >> BigInt(i)) & 1n) ? out[b] | m : out[b] & ~m;
+      bit = bit % 8 === 0 ? bit + 15 : bit - 1;
+    }
+  }
+  return out;
+}
+
+// VAL_ <id> <signal> <n> "label" ... ;  ->  { "id:signal": { n: label } }
+export function parseValueTables(source) {
+  const out = {};
+  for (const m of source.matchAll(/^\s*VAL_\s+(\d+)\s+(\w+)\s+([^;]*);/gm)) {
+    const table = {};
+    for (const p of m[3].matchAll(/(-?\d+)\s+"([^"]*)"/g)) table[Number(p[1])] = p[2];
+    out[`${m[1]}:${m[2]}`] = table;
+  }
+  return out;
 }
