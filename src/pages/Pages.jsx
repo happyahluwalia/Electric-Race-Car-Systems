@@ -13,7 +13,7 @@ const cm = name => lazy(() => import('../labs/comma-labs.jsx').then(m => ({ defa
 const cn = name => lazy(() => import('../labs/can-labs.jsx').then(m => ({ default: m[name] })));
 const labComponents = {
   pack: bt('PackLab'), frame: bt('FrameLab'), bms: wb('BmsWorkbench'), precharge: wb('EngineeringLabs'),
-  powertrain: wb('PowertrainWorkbench'), assemblies: wb('AssemblyExplorer'), vcu: wb('VcuWorkbench'),
+  powertrain: wb('PowertrainWorkbench'), assemblies: lazy(() => import('../labs/assemblies.jsx').then(m => ({ default: m.AssemblyLab }))), vcu: wb('VcuWorkbench'),
   simulation: lg('Simulation'), pinout: wb('EcuPinoutExplorer'), dbc: cm('DbcLab'), can: lg('CanLab'),
   nets: wb('ElectricalNetExplorer'), inverterframe: cn('InverterFrameLab'), safetygate: cm('SafetyGateLab'), reverse: cm('ReverseLab')
 };

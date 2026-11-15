@@ -1,5 +1,5 @@
-import React from 'react';
-import { ExternalLink } from 'lucide-react';
+import React, { useState } from 'react';
+import { CheckCircle2, ExternalLink, XCircle } from 'lucide-react';
 import { sources } from './data/sources.js';
 import { glossary } from './data/glossary.js';
 
@@ -31,5 +31,32 @@ export function SourceLinks({ ids, label = 'Based on' }) {
         <a key={id} href={sources[id].url} target="_blank" rel="noreferrer">{sources[id].title}<ExternalLink size={12} /></a>
       ))}
     </p>
+  );
+}
+
+// Multiple-choice self-check used on part pages and in labs.
+export function Check({ items }) {
+  const [picked, setPicked] = useState({});
+  const score = items.filter((q, i) => picked[i] === q.answer).length;
+  const answered = Object.keys(picked).length;
+  return (
+    <>
+      <p className="lead">Answer from what is on this page. Each explanation says where the answer comes from.</p>
+      {items.map((q, i) => (
+        <article className="quiz" key={q.q}>
+          <h3>{i + 1}. {q.q}</h3>
+          <div className="quizopts" role="group" aria-label={`Question ${i + 1}`}>
+            {q.options.map((o, j) => {
+              const chosen = picked[i] === j, show = picked[i] != null;
+              const cls = show ? (j === q.answer ? 'right' : chosen ? 'wrong' : '') : '';
+              return <button key={o} className={cls} disabled={show} aria-pressed={chosen} onClick={() => setPicked({ ...picked, [i]: j })}>
+                {show && j === q.answer && <CheckCircle2 size={15} />}{show && chosen && j !== q.answer && <XCircle size={15} />}<span><T>{o}</T></span></button>;
+            })}
+          </div>
+          {picked[i] != null && <p className={picked[i] === q.answer ? 'verdict right' : 'verdict wrong'}><b>{picked[i] === q.answer ? 'Right.' : 'Not quite.'}</b> <T>{q.why}</T></p>}
+        </article>
+      ))}
+      {answered === items.length && <p className="basis"><span>Score</span>{score} of {items.length}. {score === items.length ? 'Move on to the next part.' : 'Re-read the tab the explanation points to, then try again.'} <button className="linkbtn" onClick={() => setPicked({})}>Reset</button></p>}
+    </>
   );
 }

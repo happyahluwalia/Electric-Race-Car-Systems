@@ -258,3 +258,26 @@
 .verdict.right b{color:#58cda7}
 details summary{cursor:pointer;color:#79bce9;font-size:13px}
 @media (max-width:960px){.maptable>div{grid-template-columns:1fr}.maptable>.head{display:none}}
+/* look-inside lab */
+.assembly-toolbar{margin:0 0 12px;gap:12px;flex-wrap:wrap}
+.assembly-toolbar .explode{display:flex;align-items:center;gap:10px;font-size:13px;color:#a9bdcf}
+.assembly-toolbar .explode input{width:220px;accent-color:#79bce9}
+.assembly-layout{grid-template-columns:1.45fr 1fr;align-items:start}
+.assembly-canvas.tall{height:560px}
+.flowbar{position:absolute;top:12px;left:12px;display:flex;gap:6px;flex-wrap:wrap}
+.flowbar button{background:#0d1d2ecc;border:1px solid #35516c;border-radius:20px;color:#cfe0ee;padding:6px 12px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px}
+.flowbar button i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.flowbar button.active{border-color:var(--c);background:color-mix(in srgb,var(--c) 22%,#0d1d2e)}
+.partcard h2{margin:6px 0 4px}
+.partcard h3{font:600 12px system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:.5px;text-transform:uppercase;color:#89a5bf;margin:14px 0 2px}
+.partcard p{margin:2px 0 6px;font-size:14px;color:#c4d5e4}
+.rulebox{background:#2a1a1d;border-left:3px solid #ef6f76;padding:8px 10px;border-radius:5px;display:grid;gap:3px}
+.rulebox b{font:700 12px ui-monospace,Menlo,monospace;color:#ef9a9f}
+.deeper{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:14px}
+.assembly-parts.numbered{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:16px}
+.assembly-parts.numbered button{display:flex;gap:8px;align-items:center;font-size:12.5px}
+.assembly-parts.numbered b{font:700 11px ui-monospace,Menlo,monospace;color:#79bce9;min-width:16px}
+.flowtext{font-size:14.5px!important;line-height:1.7}
+.flowlist{padding-left:20px}.flowlist li{margin:4px 0}.flowlist button{background:none;border:0;color:#79bce9;padding:0;cursor:pointer;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.learn-card.intro p{font-size:14px;line-height:1.7;color:#c4d5e4}
+@media (max-width:960px){.assembly-layout{grid-template-columns:1fr}.assembly-canvas.tall{height:420px}}
