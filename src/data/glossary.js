@@ -1,0 +1,37 @@
+// Abbreviations a newcomer meets in the first ten minutes. `term` must match the
+// text exactly as it appears in content; it is used for inline tooltips.
+export const glossary = [
+  ['ADC', 'Analogue-to-digital converter. Turns a voltage into a number.'],
+  ['AIR', 'Accumulator isolation relay. One of the two high-voltage contactors that connect the battery to the car.'],
+  ['AMS', 'Accumulator management system. The rulebook name for the BMS.'],
+  ['APPS', 'Accelerator pedal position sensor.'],
+  ['BMS', 'Battery management system.'],
+  ['BOTS', 'Brake over-travel switch. Opens the shutdown circuit if the brake pedal travels too far, which means the brakes have failed.'],
+  ['BSE', 'Brake system encoder. The sensor that tells the controller the brakes are applied.'],
+  ['BSPD', 'Brake system plausibility device. A non-programmable circuit that cuts power when braking hard under power.'],
+  ['CAN', 'Controller area network. The two-wire bus the controllers share.'],
+  ['CRC', 'Cyclic redundancy check. Extra bits that let a receiver detect corrupted data.'],
+  ['DBC', 'The file format that describes how CAN bytes map to named signals with units.'],
+  ['DC link', 'The DC bus at the inverter input, held steady by a capacitor bank.'],
+  ['ECU', 'Electronic control unit. Any controller box.'],
+  ['GLV', 'Grounded low voltage. The rulebook name for the low-voltage system.'],
+  ['HV', 'High voltage. In the rules, above 60 V DC or 25 V AC RMS.'],
+  ['IGBT', 'Insulated-gate bipolar transistor. A silicon power switch.'],
+  ['IMD', 'Insulation monitoring device.'],
+  ['isoSPI', 'Analog Devices\' isolated two-wire version of SPI, used between battery monitor boards.'],
+  ['LV', 'Low voltage. 60 V DC or less.'],
+  ['MCU', 'Microcontroller.'],
+  ['NTC', 'Negative temperature coefficient thermistor. Its resistance falls as it warms.'],
+  ['PDM', 'Power distribution module. Electronic replacement for a fuse box.'],
+  ['PEC', 'Packet error code. The CRC used by Analog Devices battery monitors.'],
+  ['PWM', 'Pulse-width modulation. Controlling an average by switching fully on and off.'],
+  ['RTOS', 'Real-time operating system. Runs several tasks with priorities and deadlines.'],
+  ['SDC', 'Shutdown circuit. The hardwired safety loop.'],
+  ['SOC', 'State of charge. How full the battery is.'],
+  ['SPI', 'Serial peripheral interface. A short-range bus between chips on a board.'],
+  ['TSAL', 'Tractive system active light.'],
+  ['TSMS', 'Tractive system master switch.'],
+  ['VCU', 'Vehicle control unit. The car\'s main controller.']
+].map(([term, meaning]) => ({ term, meaning }));
+
+export const glossaryByTerm = Object.fromEntries(glossary.map(g => [g.term, g.meaning]));

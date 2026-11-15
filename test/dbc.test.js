@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseDbc, parseHexBytes, decodeSignal } from '../src/dbc.js';
+import { parseDbc, parseHexBytes, decodeSignal } from '../src/lib/dbc.js';
 
 const sample = [
   'VERSION "test"',
