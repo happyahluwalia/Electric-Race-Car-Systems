@@ -72,9 +72,10 @@ function Welcome() {
       </ol>
       <h3>Where to start</h3>
       <div className="lablinks">
-        <Link to="/system/hv"><b>New to electric cars</b><span>Start with the energy path, from one cell to the wheels.</span><ArrowRight size={16} /></Link>
-        <Link to="/journey/startup"><b>Want the big picture</b><span>Watch what happens between the master switch and ready-to-drive.</span><ArrowRight size={16} /></Link>
-        <Link to="/system/bms/cellmonitor"><b>Writing battery firmware</b><span>Go straight to the cell monitors and the driver walkthrough.</span><ArrowRight size={16} /></Link>
+        <Link to="/paths/foundations"><b>New to electric cars</b><span>Guided path: from one cell to the wheels, then the safety systems. 11 steps.</span><ArrowRight size={16} /></Link>
+        <Link to="/paths/bmsfirmware"><b>Writing battery firmware</b><span>Guided path: cells, monitor chips, the PEC lab and fault handling. 10 steps.</span><ArrowRight size={16} /></Link>
+        <Link to="/paths/vehiclecontrol"><b>Vehicle control and CAN</b><span>Guided path: pedal sensors, VCU, CAN and the inverter command. 10 steps.</span><ArrowRight size={16} /></Link>
+        <Link to="/journey/startup"><b>Just want the big picture</b><span>Watch what happens between the master switch and ready-to-drive.</span><ArrowRight size={16} /></Link>
       </div>
       <h3>The eight systems</h3>
       <ul className="syslist">

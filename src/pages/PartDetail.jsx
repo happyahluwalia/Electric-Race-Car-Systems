@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, ArrowRight, BookOpen, Boxes, FlaskConical, Scale } from 'lucide-react';
+import { AlertTriangle, ArrowRight, BookOpen, Boxes, CheckCircle2, FlaskConical, Scale, XCircle } from 'lucide-react';
 import { sources } from '../data/sources.js';
 import { labById } from '../data/labs.js';
 import { systemById } from '../data/systems.js';
+import { componentById } from '../data/components.js';
+import { checks } from '../data/checks.js';
+import { prerequisites } from '../data/paths.js';
 import { T, SourceLinks } from '../ui.jsx';
 
 function Rules({ rules }) {
@@ -56,8 +59,35 @@ function Firmware({ fw }) {
   );
 }
 
+function Check({ items }) {
+  const [picked, setPicked] = useState({});
+  const score = items.filter((q, i) => picked[i] === q.answer).length;
+  const answered = Object.keys(picked).length;
+  return (
+    <>
+      <p className="lead">Answer from what is on this page. Each explanation says where the answer comes from.</p>
+      {items.map((q, i) => (
+        <article className="quiz" key={q.q}>
+          <h3>{i + 1}. {q.q}</h3>
+          <div className="quizopts" role="group" aria-label={`Question ${i + 1}`}>
+            {q.options.map((o, j) => {
+              const chosen = picked[i] === j, show = picked[i] != null;
+              const cls = show ? (j === q.answer ? 'right' : chosen ? 'wrong' : '') : '';
+              return <button key={o} className={cls} disabled={show} aria-pressed={chosen} onClick={() => setPicked({ ...picked, [i]: j })}>
+                {show && j === q.answer && <CheckCircle2 size={15} />}{show && chosen && j !== q.answer && <XCircle size={15} />}<span><T>{o}</T></span></button>;
+            })}
+          </div>
+          {picked[i] != null && <p className={picked[i] === q.answer ? 'verdict right' : 'verdict wrong'}><b>{picked[i] === q.answer ? 'Right.' : 'Not quite.'}</b> <T>{q.why}</T></p>}
+        </article>
+      ))}
+      {answered === items.length && <p className="basis"><span>Score</span>{score} of {items.length}. {score === items.length ? 'Move on to the next part.' : 'Re-read the tab the explanation points to, then try again.'} <button className="linkbtn" onClick={() => setPicked({})}>Reset</button></p>}
+    </>
+  );
+}
+
 export default function PartDetail({ part }) {
-  const tabs = ['What it does', 'Why this design', ...(part.firmware ? ['Firmware'] : []), 'Failures', 'Sources'];
+  const tabs = ['What it does', 'Why this design', ...(part.firmware ? ['Firmware'] : []), 'Failures', 'Self-check', 'Sources'];
+  const before = prerequisites[part.id] || [];
   const [tab, setTab] = useState(tabs[0]);
   useEffect(() => { setTab('What it does'); }, [part.id]);
 
@@ -72,6 +102,7 @@ export default function PartDetail({ part }) {
       <div className="chips">{part.systems.map(id => <Link key={id} to={`/system/${id}/${part.id}`} style={{ '--c': systemById[id].color }}>{systemById[id].short}</Link>)}</div>
       <h2>{part.name}</h2>
       <p className="plain"><T>{part.plain}</T></p>
+      {before.length > 0 && <p className="readfirst"><span>Read first</span>{before.map(id => <Link key={id} to={`/system/${componentById[id].systems[0]}/${id}`}>{componentById[id].label}</Link>)}</p>}
 
       <div className="tabs" role="tablist">
         {tabs.map(t => <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{t}{t === 'Why this design' && <i>{part.decisions.length}</i>}</button>)}
@@ -114,10 +145,13 @@ export default function PartDetail({ part }) {
 
       {tab === 'Firmware' && <Firmware fw={part.firmware} />}
 
+      {tab === 'Self-check' && <Check key={part.id} items={checks[part.id] || []} />}
+
       {tab === 'Failures' && <>
         <p className="lead">Failure modes a designer has to plan for, and a tester has to be able to provoke.</p>
         <ul className="failures">{part.failures.map(x => <li key={x}><AlertTriangle size={15} /><span><T>{x}</T></span></li>)}</ul>
         <section><h3>Design note</h3><p><T>{part.design}</T></p></section>
+        <button className="nexttab" onClick={() => setTab('Self-check')}>Next: self-check <ArrowRight size={16} /></button>
       </>}
 
       {tab === 'Sources' && <>

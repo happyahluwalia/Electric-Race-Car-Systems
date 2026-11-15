@@ -52,6 +52,15 @@ export const enrich = {
         ],
         takeaway: 'Start from the rules: 600 V maximum, 80 kW maximum, and each module at most 120 V, 6 MJ and 12 kg. With a 4.2 V cell the most you can put in series is 142 (596 V). At 80 kW and that pack\'s 511 V nominal the cells must deliver about 156 A, which needs four 45 A cells in parallel. Try it in the pack sizing lab.',
         sources: ['fsae2027', 'p45b']
+      },
+      {
+        q: 'How hard can you push one cell?',
+        options: [
+          { name: 'Run near the continuous rating', pros: 'Fewest cells in parallel, so the lightest pack.', cons: 'Heat is I²R: at 45 A a P45B with about 15 mΩ DC resistance makes roughly 30 W, and the data sheet quotes that rating with an 80 °C cut-off, well above the 60 °C rule limit.' },
+          { name: 'Leave margin (more cells in parallel)', pros: 'Current per cell falls, heat falls with its square, and the voltage sags less under load.', cons: 'More mass and cost, and more parallel groups to fuse.' }
+        ],
+        takeaway: 'A cell\'s headline current rating is a thermal limit tied to a test condition, not a promise for a sealed pack that must stay under 60 °C. Halving the current per cell quarters its heat. Charging has its own window: the P45B may be discharged from −40 °C but charged only between 0 and 60 °C, which the BMS has to enforce during charging.',
+        sources: ['p45b', 'fsae2027']
       }
     ],
     labs: ['pack'],

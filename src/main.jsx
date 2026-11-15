@@ -4,6 +4,8 @@ import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useNavigate }
 import { Search, Zap } from 'lucide-react';
 import Explore from './pages/Explore.jsx';
 import { Labs, Glossary, Sources } from './pages/Pages.jsx';
+import { Paths } from './pages/Paths.jsx';
+import { paths } from './data/paths.js';
 import { components } from './data/components.js';
 import { systems } from './data/systems.js';
 import { journeys } from './data/journeys.js';
@@ -12,6 +14,7 @@ import { glossary } from './data/glossary.js';
 import './app.css';
 
 const index = [
+  ...paths.map(p => ({ kind: 'Path', label: p.name, hint: p.who, to: `/paths/${p.id}` })),
   ...systems.map(s => ({ kind: 'System', label: s.name, hint: s.question, to: `/system/${s.id}` })),
   ...components.map(c => ({ kind: 'Part', label: c.name, hint: c.plain, to: c.systems[0] ? `/system/${c.systems[0]}/${c.id}` : `/part/${c.id}`, extra: c.label })),
   ...journeys.map(j => ({ kind: 'Journey', label: j.name, hint: j.blurb, to: `/journey/${j.id}` })),
@@ -53,7 +56,7 @@ function ScrollReset() {
   useEffect(() => {
     const panel = document.querySelector('.panel');
     if (panel) panel.scrollTop = 0;
-    if (pathname.startsWith('/labs') || pathname === '/glossary' || pathname === '/sources') window.scrollTo(0, 0);
+    if (pathname.startsWith('/labs') || pathname.startsWith('/paths') || pathname === '/glossary' || pathname === '/sources') window.scrollTo(0, 0);
   }, [pathname]);
   return null;
 }
@@ -67,6 +70,7 @@ function App() {
         <Link to="/" className="brand"><span><Zap size={18} /></span><b>EV Systems Explorer<small>Electric race car, one system at a time</small></b></Link>
         <nav>
           <NavLink to="/" className={() => (exploring ? 'on' : '')}>Explore</NavLink>
+          <NavLink to="/paths" className={({ isActive }) => (isActive ? 'on' : '')}>Paths</NavLink>
           <NavLink to="/labs" className={({ isActive }) => (isActive ? 'on' : '')}>Labs</NavLink>
           <NavLink to="/glossary" className={({ isActive }) => (isActive ? 'on' : '')}>Glossary</NavLink>
           <NavLink to="/sources" className={({ isActive }) => (isActive ? 'on' : '')}>Sources</NavLink>
@@ -81,6 +85,8 @@ function App() {
         <Route path="/part/:cid" element={<Explore />} />
         <Route path="/journey/:jid" element={<Explore />} />
         <Route path="/journey/:jid/:step" element={<Explore />} />
+        <Route path="/paths" element={<Paths />} />
+        <Route path="/paths/:pid" element={<Paths />} />
         <Route path="/labs" element={<Labs />} />
         <Route path="/labs/:lab" element={<Labs />} />
         <Route path="/glossary" element={<Glossary />} />

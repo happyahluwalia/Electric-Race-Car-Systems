@@ -93,7 +93,7 @@ code, pre { font-family: var(--mono); }
 .detail li { margin: 4px 0; }
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }
 .chips a, .chips span { font-size: 12px; font-weight: 600; letter-spacing: .3px; padding: 2px 10px; border-radius: 20px; color: var(--c); border: 1px solid color-mix(in srgb, var(--c) 55%, transparent); background: color-mix(in srgb, var(--c) 12%, transparent); }
-.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin: 6px -22px 0; padding: 0 16px; overflow-x: auto; position: sticky; top: 0; background: var(--surface); z-index: 3; }
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin: 6px -22px 0; padding: 0 16px; flex-wrap: wrap; row-gap: 0; position: sticky; top: 0; background: var(--surface); z-index: 3; }
 .tabs button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 7px; color: var(--muted); white-space: nowrap; font-weight: 550; font-size: 14px; display: flex; align-items: center; gap: 6px; }
 .tabs button:hover { color: var(--text); }
 .tabs button.on { color: #fff; border-color: var(--accent); }
@@ -231,3 +231,31 @@ code, pre { font-family: var(--mono); }
   .io { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .panel { scroll-behavior: auto; } }
+
+/* paths, prerequisites, self-check */
+.readfirst { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 14px; margin: 8px 0 0; }
+.readfirst span { font-size: 12px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+.readfirst a { border: 1px solid var(--line); border-radius: 20px; padding: 2px 10px; background: var(--raised); }
+.pathsteps { list-style: none; padding: 0; display: grid; gap: 8px; max-width: 760px; }
+.pathsteps li { display: grid; grid-template-columns: 36px 1fr; gap: 8px; align-items: center; }
+.pathsteps .tick { background: none; border: 0; color: var(--muted); cursor: pointer; padding: 6px; }
+.pathsteps li.done .tick { color: #58cda7; }
+.pathsteps li.done a { opacity: .7; }
+.pathsteps a { display: grid; grid-template-columns: 1fr 18px; gap: 0 10px; align-items: center; background: var(--raised); border: 1px solid var(--line); border-radius: 10px; padding: 11px 14px; color: var(--text); }
+.pathsteps a:hover { border-color: var(--accent); text-decoration: none; }
+.pathsteps small { grid-column: 1; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+.pathsteps b, .pathsteps span { grid-column: 1; }
+.pathsteps span { font-size: 14px; color: var(--muted); }
+.pathsteps svg { grid-column: 2; grid-row: 1 / span 3; color: var(--accent); }
+.quiz { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 12px 0; background: var(--raised); }
+.quiz h3 { font-size: 15px; margin: 0 0 10px; }
+.quizopts { display: grid; gap: 6px; }
+.quizopts button { text-align: left; font: inherit; font-size: 14px; color: var(--text); background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; cursor: pointer; display: flex; gap: 8px; align-items: center; }
+.quizopts button:hover:not(:disabled) { border-color: var(--accent); }
+.quizopts button:disabled { cursor: default; }
+.quizopts button.right { border-color: #58cda7; background: color-mix(in srgb, #58cda7 14%, transparent); }
+.quizopts button.wrong { border-color: #ef6f76; background: color-mix(in srgb, #ef6f76 14%, transparent); }
+.verdict { font-size: 14px; margin: 10px 0 0; }
+.verdict.right b { color: #58cda7; } .verdict.wrong b { color: #ef6f76; }
+.linkbtn { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; padding: 0 0 0 6px; }
+@media (max-width: 960px) { .tabs { position: static; } }
