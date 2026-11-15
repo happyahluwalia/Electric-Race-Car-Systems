@@ -56,10 +56,10 @@ export function Glossary() {
     <div className="page narrow">
       <h1>Glossary</h1>
       <p className="lead">The abbreviations you will meet. Anywhere in the explorer, a dotted underline means you can hover for the meaning.</p>
-      <input className="filter" value={q} onChange={e => setQ(e.target.value)} placeholder="Filter, for example AMS or shutdown" aria-label="Filter glossary" />
+      <input className="filter" value={q} onChange={e => setQ(e.target.value)} placeholder="Filter, for example BMS or shutdown" aria-label="Filter glossary" />
       <dl className="glossary">{rows.map(g => <div key={g.term}><dt>{g.term}</dt><dd>{g.meaning}</dd></div>)}</dl>
       {rows.length === 0 && <p>Nothing matches "{q}".</p>}
-      <p className="basis"><span>Naming</span>Rulebooks differ. Formula SAE says AMS where most engineers say BMS, and newer editions rename the accumulator container and segments. Use the words in the rules for your event.</p>
+      <p className="basis"><span>Naming</span>Rulebooks differ. Before 2027 Formula SAE said AMS, accumulator, segment and AIR; the 2027 edition says BMS, tractive battery, module and isolation relay. Most team write-ups still use the old words. Use the words in the rules for your event.</p>
     </div>
   );
 }

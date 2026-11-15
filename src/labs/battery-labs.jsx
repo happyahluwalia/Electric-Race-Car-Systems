@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Info, RotateCcw } from 'lucide-react';
 import { pec15, commandFrame, ltc6811Adcv, cellVolts, hex } from '../lib/pec.js';
-import { sizePack, limits2024 } from '../lib/pack.js';
+import { sizePack, limits2027 } from '../lib/pack.js';
 import { SourceLinks } from '../ui.jsx';
 import './labs.css';
 
@@ -11,11 +11,13 @@ const Card = ({ children }) => <section className="learn-card">{children}</secti
 /* Pack sizing                                                         */
 /* ------------------------------------------------------------------ */
 
-const P45B = { vMax: 4.2, vNom: 3.6, vMin: 2.5, ah: 4.5, aCont: 45 };
+// Molicel INR-21700-P45B data sheet: 4500 mAh typical, 3.6 V nominal, 4.2 V charge,
+// 2.5 V discharge cut-off, 45 A continuous (80 °C cut-off), 70 g max.
+const P45B = { vMax: 4.2, vNom: 3.6, vMin: 2.5, ah: 4.5, aCont: 45, massG: 70 };
 
 export function PackLab() {
   const [cell, setCell] = useState(P45B);
-  const [cfg, setCfg] = useState({ series: 140, parallel: 4, segments: 7 });
+  const [cfg, setCfg] = useState({ series: 140, parallel: 4, modules: 7 });
   const r = sizePack(cell, cfg);
   const num = (obj, set, key, label, unit, step, min, max) => (
     <label className="lab-range" key={key}>{label}<b>{obj[key]} {unit}</b>
@@ -27,21 +29,22 @@ export function PackLab() {
       <header className="learn-heading"><div>
         <div className="learn-eyebrow">BATTERY · PACK SIZING</div>
         <h1>How many cells, arranged how?</h1>
-        <p>Series count sets voltage. Parallel count sets current and energy. Segments keep each serviceable block under the per-segment limits. Move the sliders until every check passes, then try to break one at a time.</p>
+        <p>Series count sets voltage. Parallel count sets current and energy. Modules (older rulebooks: segments) keep each serviceable block under the per-module limits of 120 V, 6 MJ and 12 kg. Move the sliders until every check passes, then try to break one at a time.</p>
       </div></header>
       <div className="lab-grid">
         <Card>
           <div className="learn-card-head"><h2>Pack layout</h2>
-            <button onClick={() => { setCell(P45B); setCfg({ series: 140, parallel: 4, segments: 7 }); }}><RotateCcw /> Reset</button></div>
+            <button onClick={() => { setCell(P45B); setCfg({ series: 140, parallel: 4, modules: 7 }); }}><RotateCcw /> Reset</button></div>
           {num(cfg, setCfg, 'series', 'Cells in series', '', 1, 20, 160)}
           {num(cfg, setCfg, 'parallel', 'Cells in parallel', '', 1, 1, 10)}
-          {num(cfg, setCfg, 'segments', 'Segments', '', 1, 1, 12)}
+          {num(cfg, setCfg, 'modules', 'Modules', '', 1, 1, 12)}
           <h3>Cell (starts as the Molicel P45B data sheet values)</h3>
           {num(cell, setCell, 'vMax', 'Full-charge voltage', 'V', 0.05, 3.4, 4.4)}
           {num(cell, setCell, 'vNom', 'Nominal voltage', 'V', 0.05, 3.0, 3.9)}
           {num(cell, setCell, 'vMin', 'Cut-off voltage', 'V', 0.05, 2.0, 3.2)}
           {num(cell, setCell, 'ah', 'Capacity', 'Ah', 0.1, 1, 10)}
           {num(cell, setCell, 'aCont', 'Continuous discharge rating', 'A', 1, 5, 80)}
+          {num(cell, setCell, 'massG', 'Cell mass', 'g', 1, 30, 120)}
         </Card>
         <Card>
           <div className="learn-eyebrow">RESULT</div>
@@ -52,8 +55,9 @@ export function PackLab() {
             <span>Empty <b>{r.vMin.toFixed(0)} V</b></span>
           </div>
           <div className="lab-result">
-            <span>Per segment <b>{r.segVMax.toFixed(1)} V</b></span>
-            <span>Segment energy <b>{r.segEnergyMJ.toFixed(2)} MJ</b></span>
+            <span>Per module <b>{r.modVMax.toFixed(1)} V</b></span>
+            <span>Module energy <b>{r.modEnergyMJ.toFixed(2)} MJ</b></span>
+            <span>Module cell mass <b>{r.modCellMassKg.toFixed(1)} kg</b></span>
             <span>Pack current at 80 kW <b>{r.packAmpsAtLimit.toFixed(0)} A</b></span>
           </div>
           <div className="validity-list">
@@ -65,8 +69,8 @@ export function PackLab() {
           </div>
         </Card>
       </div>
-      <p className="learn-footnote"><Info /> Limits used: {limits2024.maxVoltage} V, {limits2024.maxPowerKw} kW, {limits2024.segmentVoltage} V and {limits2024.segmentEnergyMJ} MJ per segment, from Formula SAE Rules 2024 (EV.3.3, EV.5.1.2). This checks arithmetic only. It ignores voltage sag under load, cell heating, busbar ratings and everything else a real pack design needs.</p>
-      <SourceLinks ids={['fsae2024', 'p45b']} />
+      <p className="learn-footnote"><Info /> Limits used: {limits2027.maxVoltage} V, {limits2027.maxPowerKw} kW, and {limits2027.moduleVoltage} V, {limits2027.moduleEnergyMJ} MJ and {limits2027.moduleMassKg} kg per module, from Formula SAE Rules 2027 (EV.3.3.1, EV.3.3.2, EV.5.1.1). Module energy follows the rule's definition: maximum stack voltage × nominal capacity. The mass check counts cells only; a real module adds housing, busbars and the monitor board. This checks arithmetic only and ignores voltage sag under load, cell heating and busbar ratings.</p>
+      <SourceLinks ids={['fsae2027', 'p45b']} />
     </div>
   );
 }

@@ -2,13 +2,13 @@
 // learning content must point at one of these ids (enforced by test/content.test.js).
 // `checked` is the date the claim text was last compared against the source.
 export const sources = {
-  fsae2024: {
-    title: 'Formula SAE Rules 2024, Version 1.0',
+  fsae2027: {
+    title: 'Formula SAE Rules 2027, Version 1.0 (1 September 2026)',
     org: 'SAE International',
     kind: 'Competition rules',
-    url: 'https://www.engr.colostate.edu/organizations/ram-racing-fsae/wp-content/uploads/sites/22/2023/09/FSAE_Rules_2024_V1-compressed.pdf',
-    checked: '2026-11-14',
-    note: 'Rule numbers and limits quoted in this app come from this edition. Rules change every season (the 2026 edition renames several terms), so always read the edition for your event.'
+    url: 'https://fsaeonline.com/cdsweb/gen/DownloadDocument.aspx?DocumentID=da79bcb4-0935-4f7b-83d7-0dbb8ce68d38',
+    checked: '2026-11-15',
+    note: 'Every rule number and limit in this app was read from the text of this edition. It renames older terms: accumulator is now tractive battery, segment is module, AMS is BMS, AIR is isolation relay, and the single TSAL became a Ready to Move Light plus a Tractive System Status Indicator. Always read the edition for your event.'
   },
   fsaeDocs: {
     title: 'Formula SAE official rules and document resources',
@@ -51,7 +51,8 @@ export const sources = {
     org: 'Molicel (E-One Moli Energy)',
     kind: 'Datasheet',
     url: 'https://www.imrbatteries.com/content/molicel_p45b.pdf',
-    checked: '2026-11-14'
+    checked: '2026-11-15',
+    note: 'Figures used: 4500 mAh typical, 3.6 V nominal, 4.2 V charge, 2.5 V discharge cut-off, 45 A continuous (80 °C cut-off), 70 g max, 15 mΩ DC at 50% SOC.'
   },
   sloa101: {
     title: 'Introduction to the Controller Area Network (CAN), application report SLOA101',

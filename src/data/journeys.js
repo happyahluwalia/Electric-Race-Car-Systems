@@ -5,13 +5,13 @@ export const journeys = [
     id: 'startup',
     name: 'Switching the car on',
     blurb: 'From master switch to ready-to-drive.',
-    sources: ['fsae2024'],
+    sources: ['fsae2027'],
     steps: [
-      { part: 'lv', title: 'Low voltage comes up', text: 'The low-voltage master switch powers the controllers. Nothing above 60 V exists outside the battery container yet, so the roll-hoop light is green.' },
+      { part: 'lv', title: 'Low voltage comes up', text: 'The low-voltage master switch powers the controllers. Every indicator lamp lights for 2 to 6 s as a lamp check. Nothing above 60 V exists outside the battery container yet, so the amber lights stay off and the status indicator shows green.' },
       { part: 'shutdown', title: 'The safety loop is closed', text: 'With every button out, the insulation monitor, battery monitor and brake plausibility device all healthy, and the tractive master switch on, the loop is complete.' },
-      { part: 'precharge', title: 'Precharge', text: 'The negative relay and the precharge relay close. The inverter capacitors charge through the resistor until they reach at least 90% of pack voltage.' },
+      { part: 'precharge', title: 'Precharge', text: 'The negative relay and the precharge relay close. The inverter capacitors charge through the resistor until the measured bus voltage reaches at least 90% of pack voltage.' },
       { part: 'air', title: 'Main relay closes', text: 'The second isolation relay closes across a small voltage difference, and the precharge relay drops out. The pack is now connected.' },
-      { part: 'tsal', title: 'Tractive system active', text: 'High voltage is now present outside the container. The roll-hoop light flashes red.' },
+      { part: 'tsal', title: 'Tractive system active', text: 'High voltage is now present outside the container. The amber Ready to Move Lights flash at about 1 Hz, driven by the measured voltage alone.' },
       { part: 'vcu', title: 'Ready to drive', text: 'The driver holds the brake and presses start. The control unit enters its drive state.' },
       { part: 'dashboard', title: 'Warning sound', text: 'As the car enters ready-to-drive it sounds a tone of at least 80 dBA for one to three seconds, so nobody nearby is surprised when it moves.' }
     ]
@@ -20,7 +20,7 @@ export const journeys = [
     id: 'pedal',
     name: 'Pedal to torque',
     blurb: 'How a foot movement becomes wheel torque.',
-    sources: ['fsae2024'],
+    sources: ['fsae2027'],
     steps: [
       { part: 'apps', title: 'Two sensors move', text: 'Pedal travel becomes two independent voltages with different curves.' },
       { part: 'vcu', title: 'Sample and check', text: 'The control unit samples both, rejects anything outside the valid range, and compares them. More than 10% apart for more than 100 ms cuts motor power.' },
@@ -37,10 +37,10 @@ export const journeys = [
     id: 'cellfault',
     name: 'A cell goes over-voltage',
     blurb: 'From one bad reading to a disconnected pack.',
-    sources: ['fsae2024', 'vmsBms'],
+    sources: ['fsae2027', 'vmsBms'],
     steps: [
       { part: 'cell', title: 'A cell drifts high', text: 'During regeneration or charging, one cell rises above its limit.' },
-      { part: 'cellmonitor', title: 'Measured', text: 'The monitor IC on that segment converts the cell voltage and sends it down the isolated link with an error check.' },
+      { part: 'cellmonitor', title: 'Measured', text: 'The monitor IC on that module converts the cell voltage and sends it down the isolated link with an error check.' },
       { part: 'bms', title: 'Validated', text: 'The BMS confirms the error check and that the reading is fresh, then compares it to the limit.' },
       { part: 'bms', title: 'Latched', text: 'The fault is latched. It will not clear by itself even if the voltage recovers.' },
       { part: 'shutdown', title: 'Loop opened', text: 'The BMS safety output opens its contact in the shutdown loop.' },
@@ -53,13 +53,13 @@ export const journeys = [
     id: 'isolation',
     name: 'An insulation fault',
     blurb: 'Why the car stops when a cable chafes through.',
-    sources: ['fsae2024', 'ir155'],
+    sources: ['fsae2027', 'ir155'],
     steps: [
       { part: 'imd', title: 'Resistance falls', text: 'A damaged cable gives the high-voltage system a path to the chassis. The monitor measures insulation resistance below its threshold.' },
       { part: 'shutdown', title: 'Loop opened and latched', text: 'The monitor\'s output trips a hardware latch in the shutdown loop. No software is involved.' },
       { part: 'air', title: 'Pack disconnected', text: 'Both isolation relays open.' },
-      { part: 'tsal', title: 'Light changes', text: 'Once the bus has discharged below 60 V the roll-hoop light returns to green.' },
-      { part: 'dashboard', title: 'Driver told', text: 'The insulation fault indicator lights in the cockpit. The car stays disabled until someone resets it at the vehicle.' }
+      { part: 'tsal', title: 'Lights change', text: 'The status indicator switches from green to flashing red the moment the IMD latch trips. Once the bus has discharged below 50 V the amber Ready to Move Lights go off.' },
+      { part: 'dashboard', title: 'Driver told', text: 'The red IMD lamp lights in the cockpit and stays on. The car stays disabled until a person resets it at the vehicle; the driver cannot.' }
     ]
   }
 ];

@@ -9,15 +9,18 @@
 // labs:      ids of hands-on labs that exercise this component
 // inside:    which exploded assembly shows the internals
 
-const R = (id, text) => ({ id, text, source: 'fsae2024' });
+// Rule ids and wording follow Formula SAE Rules 2027 V1.0 (1 Sept 2026). Older
+// editions numbered the same requirements differently and used older names:
+// Accumulator -> Tractive Battery, Segment -> Module, AMS -> BMS, AIR -> Isolation Relay.
+const R = (id, text) => ({ id, text, source: 'fsae2027' });
 
 export const enrich = {
   cell: {
     plain: 'One battery cell. Everything else in the pack exists to connect, protect or measure these.',
     rules: [
-      R('EV.3.3.2', 'Maximum voltage between any two points of the tractive system: 600 V DC.'),
-      R('EV.7.5.2', 'Cell temperature must stay below the lower of the datasheet maximum and 60 °C.'),
-      R('EV.7.4.2', 'Cell voltages must stay inside the limits in the cell datasheet.')
+      R('EV.3.3.2', 'Maximum voltage between any two points: 600 V DC.'),
+      R('EV.8.5.2', 'Cell temperature, allowing for measurement accuracy, must stay below the lower of the datasheet maximum and 60 °C.'),
+      R('EV.8.4.2', 'Cell voltages must stay between the datasheet minimum and maximum, allowing for measurement accuracy.')
     ],
     decisions: [
       {
@@ -47,8 +50,8 @@ export const enrich = {
           { name: 'More in series', pros: 'Higher voltage, so less current (and thinner cable, less heat) for the same power.', cons: 'More cell voltages to monitor. Capped by the 600 V limit and by the voltage rating of the inverter and motor.' },
           { name: 'More in parallel', pros: 'More current capability and more energy at the same voltage.', cons: 'More mass. Parallel groups share one voltage measurement, so one weak cell is harder to spot.' }
         ],
-        takeaway: 'Start from the rules: 600 V maximum, 80 kW maximum, and each segment under 120 V and 6 MJ. With a 4.2 V cell the most you can put in series is 142 (596 V). At 80 kW and that pack\'s 511 V nominal the cells must deliver about 156 A, which needs four 45 A cells in parallel. Try it in the pack sizing lab.',
-        sources: ['fsae2024', 'p45b']
+        takeaway: 'Start from the rules: 600 V maximum, 80 kW maximum, and each module at most 120 V, 6 MJ and 12 kg. With a 4.2 V cell the most you can put in series is 142 (596 V). At 80 kW and that pack\'s 511 V nominal the cells must deliver about 156 A, which needs four 45 A cells in parallel. Try it in the pack sizing lab.',
+        sources: ['fsae2027', 'p45b']
       }
     ],
     labs: ['pack'],
@@ -56,21 +59,21 @@ export const enrich = {
   },
 
   accumulator: {
-    plain: 'The battery pack: cells grouped into segments inside one sealed, removable container.',
+    plain: 'The battery pack, called the tractive battery in the rules (older editions said accumulator): cells grouped into modules inside one sealed, removable container.',
     rules: [
-      R('EV.5.1.2', 'Each segment: less than 120 V DC and no more than 6 MJ.'),
-      R('EV.5.4.1', 'Each container needs at least one fuse and at least two isolation relays.'),
-      R('EV.4.3.3', 'The container must be completely closed at all times.')
+      R('EV.5.1.1', 'Each module: at most 120 V DC static voltage, 6 MJ of energy (maximum stack voltage × nominal cell capacity) and 12 kg of mass.'),
+      R('EV.5.4.1', 'Each tractive battery pack needs at least one fuse and two or more isolation relays.'),
+      R('EV.4.3.1', 'The container must be removable while staying rules-compliant, and completely closed at all times, on or off the car.')
     ],
     decisions: [
       {
-        q: 'Why split the pack into segments?',
+        q: 'Why split the pack into modules?',
         options: [
           { name: 'One continuous string', pros: 'Fewest connectors.', cons: 'Anyone working on it is exposed to full pack voltage. Not permitted.' },
-          { name: 'Several segments with maintenance plugs', pros: 'With the plugs out, no part of the open pack exceeds 120 V. One segment can be swapped without rebuilding the pack.', cons: 'More connectors, each one a resistance and a possible failure point.' }
+          { name: 'Several modules with maintenance plugs', pros: 'With the plugs out, no part of the open pack exceeds 120 V, and the 12 kg cap keeps each module liftable. One module can be swapped without rebuilding the pack.', cons: 'More connectors, each one a resistance and a possible failure point.' }
         ],
-        takeaway: 'Segmentation is a safety and serviceability decision. It also sets how many cells each monitor board has to measure, which feeds straight into the choice of monitor IC.',
-        sources: ['fsae2024']
+        takeaway: 'Splitting the pack is a safety and serviceability decision. It also sets how many cells each monitor board has to measure, which feeds straight into the choice of monitor IC. Older rulebooks and most team write-ups call a module a "segment".',
+        sources: ['fsae2027']
       },
       {
         q: 'How is the pack cooled?',
@@ -78,13 +81,13 @@ export const enrich = {
           { name: 'Forced air', pros: 'Light and simple, nothing to leak.', cons: 'Limited heat removal. Cells in the middle run hotter than those at the edge.' },
           { name: 'Liquid cold plate', pros: 'More heat removed and more even cell temperatures.', cons: 'Mass, pumps, hoses, and coolant next to high voltage.' }
         ],
-        takeaway: 'The hard limit is 60 °C on any cell. Many race packs get there with air and enough thermal mass for a short run; liquid buys margin at the cost of mass and complexity.',
-        sources: ['fsae2024']
+        takeaway: 'The hard limit is 60 °C on any cell, measured at the negative terminal. Many race packs get there with air and enough thermal mass for a short run; liquid buys margin at the cost of mass and complexity.',
+        sources: ['fsae2027']
       }
     ],
     cases: [
-      { team: 'Columbia EV21', text: 'Six segments of twelve Energus Li2x8pVTC5AT cell modules, arranged to be "easily removable and serviceable".', source: 'columbiaEv21' },
-      { team: 'Virginia Motorsports', text: '144 cells in eight segments of eighteen, with six thermistors per segment.', source: 'vmsBms' }
+      { team: 'Columbia EV21', text: 'Six segments (modules, in 2027 terms) of twelve Energus Li2x8pVTC5AT cell modules, arranged to be "easily removable and serviceable".', source: 'columbiaEv21' },
+      { team: 'Virginia Motorsports', text: '144 cells in eight segments (modules) of eighteen, with six thermistors per segment.', source: 'vmsBms' }
     ],
     labs: ['pack', 'assemblies'],
     inside: 'battery'
@@ -93,8 +96,9 @@ export const enrich = {
   hvfuse: {
     plain: 'A one-shot safety link that melts if a short circuit drives far too much current.',
     rules: [
-      R('EV.6.6.2', 'Rated for the highest system voltage, a continuous rating no higher than the part it protects, and an interrupt rating above the prospective short-circuit current.'),
-      R('EV.5.4.1', 'At least one fuse per container.')
+      R('EV.7.6.2', 'Rated for DC at or above the system voltage, a continuous rating no higher than the part it protects, and an interrupt rating above the theoretical short-circuit current.'),
+      R('EV.5.4.1', 'At least one fuse per tractive battery pack.'),
+      R('EV.7.6.3', 'Every parallel element (parallel cells, strings or conductors) needs its own overcurrent protection.')
     ],
     decisions: [
       {
@@ -105,17 +109,18 @@ export const enrich = {
           { name: 'Fuse', pros: 'Passive: no supply, no code, nothing to configure. Clears faults larger than a relay can break.', cons: 'Single use. Must be chosen for DC: the voltage and interrupt ratings matter as much as the amps.' }
         ],
         takeaway: 'The three protect against different things: BMS for slow problems, relays for commanded disconnection, fuse for the short circuit nothing else survives.',
-        sources: ['fsae2024']
+        sources: ['fsae2027']
       }
     ]
   },
 
   air: {
-    plain: 'Two heavy-duty switches, one on each battery terminal, that connect the pack to the car only while the safety loop is healthy.',
+    plain: 'Two heavy-duty switches, one on each battery terminal, that connect the pack to the car only while the safety loop is healthy. The rules call them isolation relays (IR); older editions said AIR.',
     rules: [
-      R('EV.5.4.1', 'Two or more isolation relays per container.'),
+      R('EV.5.4.1', 'Two or more isolation relays per tractive battery pack.'),
       R('EV.5.4.2', 'Normally open, and they must open both poles.'),
-      R('EV.7.2.2', 'When the shutdown circuit opens: current stops, and tractive voltage falls to Low Voltage within 5 seconds.')
+      R('EV.5.4.3', 'With the relays open, no high voltage may exist outside the container, and each relay must give complete galvanic isolation between its two sides.'),
+      R('EV.8.2.2', 'When the shutdown circuit opens: battery current stops immediately, and tractive voltage falls to Low Voltage within 5 seconds.')
     ],
     decisions: [
       {
@@ -135,7 +140,7 @@ export const enrich = {
           { name: 'One per pole', pros: 'A single welded contact still leaves the circuit open. With both open, nothing outside the container is connected to the cells.', cons: 'More mass and cost.' }
         ],
         takeaway: 'Normally-open matters just as much: lose low-voltage power for any reason and the springs open the contacts.',
-        sources: ['fsae2024']
+        sources: ['fsae2027']
       }
     ],
     labs: ['precharge', 'simulation']
@@ -163,8 +168,9 @@ export const enrich = {
   precharge: {
     plain: 'A resistor and small relay that fill the inverter\'s capacitors slowly before the main relays close.',
     rules: [
-      R('EV.5.6.1', 'Charge the intermediate circuit to at least 90% of pack voltage before closing the second isolation relay.'),
-      R('EV.5.6.2', 'End of precharge is decided by voltage feedback or by a minimum time.'),
+      R('EV.5.6.1', 'Charge the intermediate circuit to at least 90% of tractive system voltage before closing the second isolation relay, supplied from the shutdown circuit.'),
+      R('EV.5.6.2', 'The end of precharge must be controlled by feedback from the measured intermediate-circuit voltage.'),
+      R('EV.5.6.4', 'PTC devices must not be used to limit precharge or discharge current.'),
       R('EV.5.6.5', 'The precharge relay must be a mechanical type.')
     ],
     decisions: [
@@ -174,17 +180,17 @@ export const enrich = {
           { name: 'Low resistance', pros: 'Fast start-up.', cons: 'High peak current at the first instant (pack voltage ÷ R) and a large pulse of heat in the resistor.' },
           { name: 'High resistance', pros: 'Gentle on the resistor and relay.', cons: 'Slow. If anything on the bus draws current, the voltage may never reach 90%.' }
         ],
-        takeaway: 'The voltage rises as 1 − e^(−t/RC). Reaching 90% takes about 2.3 time constants. The resistor absorbs the same energy the capacitors end up storing (½CV²) whatever its value, so it is sized for that energy pulse, not for continuous power.',
-        sources: ['fsae2024']
+        takeaway: 'The voltage rises as 1 − e^(−t/RC). Reaching 90% takes about 2.3 time constants. The resistor absorbs the same energy the capacitors end up storing (½CV²) whatever its value, so it is sized for that energy pulse, not for continuous power. A self-limiting PTC resistor is not allowed for this job.',
+        sources: ['fsae2027']
       },
       {
         q: 'How do you decide precharge has finished?',
         options: [
-          { name: 'Fixed timer', pros: 'No high-voltage measurement needed.', cons: 'Blind. A broken resistor or a shorted bus looks the same as success.' },
+          { name: 'Fixed timer', pros: 'No high-voltage measurement needed.', cons: 'Blind. A broken resistor or a shorted bus looks the same as success. Not permitted on its own since the 2027 rules.' },
           { name: 'Voltage feedback', pros: 'Closes the main relay only when the bus has really reached the threshold, and can raise a timeout fault if it never does.', cons: 'Needs isolated measurement of bus voltage.' }
         ],
-        takeaway: 'The rules allow either. Voltage feedback turns precharge from a delay into a check, which is why most inverters and BMS units report bus voltage.',
-        sources: ['fsae2024']
+        takeaway: 'Earlier rule editions allowed a timer; the 2027 rules require voltage feedback. Feedback turns precharge from a delay into a check, which is why most inverters and BMS units report bus voltage. Keep the timer as well, as a timeout that raises a fault.',
+        sources: ['fsae2027']
       }
     ],
     labs: ['precharge']
@@ -193,8 +199,8 @@ export const enrich = {
   dcLink: {
     plain: 'A bank of capacitors right at the inverter that supplies the fast current pulses the switches demand.',
     rules: [
-      R('EV.7.2.2', 'After shutdown, tractive voltage must fall to Low Voltage within 5 seconds, so this bank needs a discharge path.'),
-      R('EV.5.6.3', 'The discharge circuit must be active whenever the shutdown circuit is open.')
+      R('EV.8.2.2', 'After shutdown, tractive voltage must fall to Low Voltage within 5 seconds, so this bank needs a discharge path.'),
+      R('EV.5.6.3', 'The discharge circuit must be active whenever the shutdown circuit is open, work with the service disconnect removed, carry no fuse, and withstand full tractive voltage for at least 15 seconds.')
     ],
     decisions: [
       {
@@ -214,8 +220,10 @@ export const enrich = {
   inverter: {
     plain: 'The motor controller. It turns battery DC into three-phase current and controls how much torque the motor makes.',
     rules: [
-      R('EV.3.3.1', 'Power drawn from the battery must not exceed 80 kW.'),
-      R('EV.7.2.2', 'When the shutdown circuit opens the motors must spin free with no torque applied.')
+      R('EV.3.3.1', 'Power measured by the energy meter must not exceed 80 kW.'),
+      R('EV.4.2', 'Motors must connect to the battery only through a motor controller.'),
+      R('EV.8.2.2', 'When the shutdown circuit opens the motors must spin free with no torque applied.'),
+      R('EV.3.1.3', 'Any torque algorithm may only reduce the driver\'s requested torque, never increase it.')
     ],
     decisions: [
       {
@@ -308,10 +316,12 @@ export const enrich = {
   },
 
   cellmonitor: {
-    plain: 'A chip on each battery segment that measures every cell and passes the numbers along an isolated link.',
+    plain: 'A chip on each battery module that measures every cell and passes the numbers along an isolated link.',
     rules: [
-      R('EV.7.4.1', 'The cell voltage of every cell must be measured (one measurement covers cells wired directly in parallel).'),
-      R('EV.7.5.5', 'For lithium cells, the temperature of at least 20% of cells must be monitored, evenly distributed.')
+      R('EV.8.4.1', 'The BMS must measure the voltage of every cell (one measurement covers cells wired directly in parallel).'),
+      R('EV.8.4.3', 'Every voltage sense wire needs overcurrent protection at the cell tab, rated for the module voltage.'),
+      R('EV.8.5.5', 'For lithium cells, the temperature of at least 20% of cells must be monitored, equally distributed, at the negative terminal.'),
+      R('EV.8.3.2', 'Galvanic isolation is required at every module-to-module boundary.')
     ],
     decisions: [
       {
@@ -321,16 +331,16 @@ export const enrich = {
           { name: 'LTC6811 (Analog Devices)', pros: '12 cells per chip, 1.2 mV total error, 1 Mbit/s isoSPI over up to 100 m of cable. Years of public example code.', cons: 'Older generation with fewer channels and no redundant measurement path.' },
           { name: 'BQ79616-Q1 (Texas Instruments)', pros: '6 to 16 cells per chip, ±1.5 mV, isolated daisy chain with an optional ring so one broken link is survivable. Up to 35 devices in a stack.', cons: 'Different protocol and tooling; the host talks through a separate bridge chip (BQ79600).' }
         ],
-        takeaway: 'All three satisfy "measure every cell". What tips it: how many cells are in each segment compared with channels per chip, which isolation link you want to debug, and how much working driver code already exists.',
+        takeaway: 'All three satisfy "measure every cell". What tips it: how many cells are in each module compared with channels per chip, which isolation link you want to debug, and how much working driver code already exists.',
         sources: ['adbms6830b', 'ltc6811', 'bq79616']
       },
       {
         q: 'How do boards at different voltages talk to one controller?',
         options: [
           { name: 'Isolated daisy chain (isoSPI and similar)', pros: 'Two wires through a small transformer between boards. One microcontroller runs the whole pack.', cons: 'A break in the chain cuts off everything beyond it, unless the chain can be driven from both ends.' },
-          { name: 'A microcontroller per segment on isolated CAN', pros: 'Each segment works independently and can be tested by itself.', cons: 'More parts, more firmware images, more to keep in sync.' }
+          { name: 'A microcontroller per module on isolated CAN', pros: 'Each module works independently and can be tested by itself.', cons: 'More parts, more firmware images, more to keep in sync.' }
         ],
-        takeaway: 'The link exists because each segment sits at a different voltage. Plain SPI would connect those voltages together; an isolated link carries data while blocking the DC.',
+        takeaway: 'The link exists because each module sits at a different voltage, and the rules demand isolation at every module boundary. Plain SPI would connect those voltages together; an isolated link carries data while blocking the DC.',
         principle: true
       },
       {
@@ -339,8 +349,8 @@ export const enrich = {
           { name: 'Passive (bleed resistor)', pros: 'Built into the monitor IC: the ADBMS6830B switches up to 300 mA per cell. Simple and reliable.', cons: 'Burns the excess as heat. Only moves cells downward.' },
           { name: 'Active (charge shuttling)', pros: 'Moves energy from high cells to low ones instead of wasting it.', cons: 'Extra converters, cost and failure modes.' }
         ],
-        takeaway: 'For a small, well-matched race pack that is balanced during charging, passive is enough and comes free with the chip.',
-        sources: ['adbms6830b']
+        takeaway: 'For a small, well-matched race pack that is balanced during charging, passive is enough and comes free with the chip. Balancing is not allowed while the shutdown circuit is open.',
+        sources: ['adbms6830b', 'fsae2027']
       }
     ],
     cases: [
@@ -367,9 +377,10 @@ export const enrich = {
   bms: {
     plain: 'The battery\'s supervisor. It reads the monitor chips, decides whether the pack is safe, and can shut the car down by itself.',
     rules: [
-      R('EV.7.3.5', 'On a fault the AMS must open the shutdown circuit and light its indicator.'),
-      R('EV.7.2.3', 'If the AMS, IMD or BSPD opens the shutdown circuit, the car stays disabled until someone resets it at the vehicle.'),
-      R('EV.7.5.2', 'Cell temperature below the lower of the datasheet maximum and 60 °C.')
+      R('EV.8.3.4', 'The BMS must watch for: voltage or temperature out of range, a blown sense-wire fuse, a missing or interrupted measurement, and a fault in itself.'),
+      R('EV.8.3.5', 'On any of those, the BMS must open the shutdown circuit and light the red BMS indicator and the status indicator, which stay on until a manual reset.'),
+      R('EV.8.2.3', 'If the BMS, IMD or BSPD opens the shutdown circuit, the car stays disabled until a person resets it at the vehicle; the driver cannot.'),
+      R('EV.8.5.2', 'Cell temperature below the lower of the datasheet maximum and 60 °C.')
     ],
     decisions: [
       {
@@ -387,8 +398,8 @@ export const enrich = {
           { name: 'Send a CAN message and let the VCU react', pros: 'Easy. The VCU can cut torque smoothly.', cons: 'Depends on two controllers, a bus and their software all working at the moment something is already wrong.' },
           { name: 'Open the shutdown circuit directly', pros: 'A dedicated output drops the isolation relays regardless of any other controller.', cons: 'Abrupt: the car loses drive immediately.' }
         ],
-        takeaway: 'Do both. The hardwired output is the protection and is required; the CAN message is the explanation. The fault must latch so that a problem which clears by itself cannot quietly come back.',
-        sources: ['fsae2024', 'vmsBms']
+        takeaway: 'Do both. The hardwired output is the protection and is required; the CAN message is the explanation. The fault must latch so that a problem which clears by itself cannot quietly come back. Note that "missing data" is a listed fault: a driver that silently keeps the last value breaks the rule.',
+        sources: ['fsae2027', 'vmsBms']
       },
       {
         q: 'How do you estimate state of charge?',
@@ -422,7 +433,8 @@ export const enrich = {
   packcurrent: {
     plain: 'Measures the current flowing in or out of the pack.',
     rules: [
-      R('EV.3.2.3', 'All tractive power must flow through the organiser\'s energy meter, which enforces the 80 kW limit.')
+      R('EV.3.2.4', 'All tractive system power must flow through the organiser\'s energy meter, which is what checks the 80 kW limit.'),
+      R('EV.3.4.1', 'A violation is power or voltage over the limit for 100 ms continuously, or over a 500 ms moving average.')
     ],
     decisions: [
       {
@@ -445,8 +457,9 @@ export const enrich = {
     plain: 'The car\'s main computer. It reads the driver, checks everything is ready, and asks the inverter for torque.',
     rules: [
       R('T.4.2.5', 'If the two pedal sensors disagree for more than 100 ms, power to the motors must stop immediately.'),
-      R('EV.4.7', 'If the brakes are on while the accelerator is past 25%, motor power is cut and stays off until the pedal is below 5%.'),
-      R('EV.9.4.2', 'Ready-to-drive needs the tractive system active, the brake pedal held and a deliberate driver action.')
+      R('EV.4.7.2', 'If the brakes are on while the accelerator is past 25% travel, motor power is cut and stays off until the pedal is below 5%.'),
+      R('EV.10.6.2', 'Ready to Drive needs all three: tractive system active, the brake pedal held, and a manual driver action such as a button.'),
+      R('EV.10.2', 'Systems must energise in order: low voltage, then tractive system active, then Ready to Drive.')
     ],
     decisions: [
       {
@@ -489,7 +502,7 @@ export const enrich = {
     plain: 'Two separate sensors on the accelerator pedal, so that one failing cannot command torque.',
     rules: [
       R('T.4.2.2', 'Two or more electrically separate sensors.'),
-      R('T.4.2.3', 'The sensors must have different transfer functions, so a short between them is detectable.'),
+      R('T.4.2.3', 'Different transfer functions, a pull-up or pull-down that reads an open circuit as 0% pedal, and outputs at least 10% apart above 10% travel.'),
       R('T.4.2.4', 'Implausibility: the sensors differ by more than 10% of pedal travel.'),
       R('T.4.2.5', 'Implausibility for more than 100 ms: motor power must stop.')
     ],
@@ -500,8 +513,8 @@ export const enrich = {
           { name: 'Identical outputs', pros: 'Simple comparison.', cons: 'If the two signal wires short together they still agree perfectly, at whatever voltage the short produces.' },
           { name: 'Different slope or offset', pros: 'Each pedal position maps to a unique pair of voltages. A short gives a pair that matches no real position and is rejected.', cons: 'Each channel needs its own calibration.' }
         ],
-        takeaway: 'Redundancy only helps if the two channels cannot fail in the same way. The rules require electrically separate sensors with different curves; giving each its own supply and ground goes one step further.',
-        sources: ['fsae2024']
+        takeaway: 'Redundancy only helps if the two channels cannot fail in the same way. The rules require electrically separate sensors with different curves, and a pull-up or pull-down so an open circuit reads as 0% pedal; giving each its own supply and ground goes one step further.',
+        sources: ['fsae2027']
       },
       {
         q: 'Why not use the full 0 to 5 V range?',
@@ -509,8 +522,8 @@ export const enrich = {
           { name: 'Use the whole range', pros: 'Maximum resolution.', cons: 'A broken wire (0 V) or a short to supply (5 V) looks like a valid pedal position.' },
           { name: 'Keep clear of both rails', pros: 'Anything near 0 V or 5 V can only be a wiring fault.', cons: 'Slightly less resolution.' }
         ],
-        takeaway: 'The rules give below 0.5 V or above 4.5 V as an example of out-of-range for an analogue sensor.',
-        sources: ['fsae2024']
+        takeaway: 'The rules treat an out-of-range signal as an implausibility, and require that an open circuit reads as 0% pedal. Staying clear of both rails is how an analogue sensor meets that.',
+        sources: ['fsae2027']
       },
       {
         q: 'Potentiometer or Hall-effect sensor?',
@@ -531,9 +544,11 @@ export const enrich = {
   shutdown: {
     plain: 'A single loop of wire through every safety switch. Break it anywhere and the battery disconnects.',
     rules: [
-      R('EV.7.1.1', 'In the loop: AMS, IMD, BSPD, interlocks, both master switches, the shutdown buttons, the brake over-travel switch and the inertia switch.'),
-      R('EV.7.2.2', 'When it opens: current stops immediately, tractive voltage falls to Low Voltage within 5 s, motors spin free.'),
-      R('EV.7.2.3', 'After an AMS, IMD or BSPD trip, only a manual reset at the car re-enables it.')
+      R('EV.8.1.1', 'In series in the loop: BMS, IMD, BSPD, interlocks, both master switches, three shutdown buttons, the brake over-travel switch and the inertia switch.'),
+      R('EV.8.1.2', 'The loop itself carries the current that drives the isolation relay coils and the precharge relay.'),
+      R('EV.8.1.5', 'BMS, IMD and BSPD must each have a completely independent way of opening the loop.'),
+      R('EV.8.2.2', 'When it opens: current stops immediately, tractive voltage falls to Low Voltage within 5 s, motors spin free.'),
+      R('EV.8.2.3', 'After a BMS, IMD or BSPD trip, only a manual reset by a person at the car re-enables it, and the shutdown buttons or master switch cannot.')
     ],
     decisions: [
       {
@@ -542,8 +557,8 @@ export const enrich = {
           { name: 'Software over CAN', pros: 'Flexible, and every event is logged.', cons: 'Works only if the sender, the bus, the receiver and all their code are healthy, at the very moment something has failed.' },
           { name: 'Series loop feeding the relay coils', pros: 'Opening any contact removes coil power. A cut wire, a pulled connector or a dead supply all fail to "off".', cons: 'Harder to diagnose: you know the loop is open, not where.' }
         ],
-        takeaway: 'The safety function is the wire. Controllers watch the loop and report which element opened, but they are observers, not part of the path. That is also why the brake over-travel switch, BSPD and IMD may not use programmable logic.',
-        sources: ['fsae2024']
+        takeaway: 'The safety function is the wire. Controllers watch the loop and report which element opened, but they are observers, not part of the path. That is also why the BSPD is non-programmable and the IMD must work without programmable logic.',
+        sources: ['fsae2027']
       }
     ],
     labs: ['simulation']
@@ -552,9 +567,10 @@ export const enrich = {
   imd: {
     plain: 'Constantly checks that the high-voltage system has not started leaking to the chassis.',
     rules: [
-      R('EV.7.6.2', 'Must be a Bender IR155-3203 or IR155-3204, or an approved equivalent.'),
-      R('EV.7.6.3', 'Response value: 500 Ω per volt or higher.'),
-      R('EV.6.5.1', 'The tractive system and the grounded low-voltage system must be completely galvanically separated.')
+      R('EV.8.6.2', 'Must be an approved model from the list in the Rules FAQ on the event website.'),
+      R('EV.8.6.3', 'Response value: 500 Ω per volt or higher, relative to maximum tractive system voltage.'),
+      R('EV.8.6.4', 'It must detect an insulation failure and a failure of itself, without any programmable logic.'),
+      R('EV.7.5.1', 'The tractive system and the grounded low-voltage system must be completely galvanically separated.')
     ],
     decisions: [
       {
@@ -564,16 +580,16 @@ export const enrich = {
           { name: 'Float the battery and monitor it', pros: 'A single contact with either terminal completes no circuit. The first insulation failure is detected before a second one makes it dangerous.', cons: 'Needs a device that measures megohms on a live system.' }
         ],
         takeaway: 'A floating system is only safe while it stays floating. The IMD is what proves that, continuously. At 500 Ω per volt, a 600 V system must trip below 300 kΩ.',
-        sources: ['fsae2024']
+        sources: ['fsae2027']
       },
       {
-        q: 'Why this particular device?',
+        q: 'Why do teams use the Bender IR155?',
         options: [
-          { name: 'Bender IR155-3203 / 3204', pros: 'Named in the rules. Monitors systems from 0 to 1000 V DC, measures 0 to 10 MΩ, runs from a 12 V or 24 V supply, self-tests automatically. Gives a simple OK/not-OK output plus a PWM signal encoding the measured resistance.', cons: 'The first measurement after power-up takes seconds, which start-up logic has to allow for.' },
-          { name: 'Team-built monitor', pros: 'None that outweigh the risk.', cons: 'Would need approval as an equivalent. Not a place to innovate.' }
+          { name: 'Bender IR155-3203 / 3204', pros: 'The device most Formula Student teams fit, and the one earlier rule editions named outright. Measures insulation up to 10 MΩ, runs from a 12 V or 24 V supply, self-tests automatically, and gives a simple OK/not-OK output plus a PWM signal encoding the measured resistance.', cons: 'The first measurement after power-up takes seconds, which start-up logic has to allow for.' },
+          { name: 'Team-built monitor', pros: 'None that outweigh the risk.', cons: 'The 2027 rules only accept models on the approved list. Not a place to innovate.' }
         ],
-        takeaway: 'The OK output goes into the shutdown loop through a latch with no programmable logic. The PWM output is for the controller to log and display.',
-        sources: ['fsae2024', 'ir155']
+        takeaway: 'Check the current approved-model list before buying. The OK output goes into the shutdown loop through a latch with no programmable logic. The PWM output is for the controller to log and display.',
+        sources: ['fsae2027', 'ir155']
       }
     ],
     labs: ['simulation']
@@ -582,9 +598,10 @@ export const enrich = {
   bspd: {
     plain: 'A small analogue circuit that cuts power if the car is braking hard and still drawing drive current.',
     rules: [
-      R('EV.7.7.1', 'A standalone, non-programmable circuit.'),
-      R('EV.7.7.2', 'Opens the shutdown circuit when hard braking and about 5 kW of motor power occur together; it may wait up to 0.5 s.'),
-      R('EV.7.7.3', 'An open or shorted sensor input must also open the shutdown circuit.')
+      R('EV.8.7.1', 'A standalone, non-programmable circuit, in addition to the software pedal check.'),
+      R('EV.8.7.2', 'Opens the shutdown circuit when hard braking and a current equal to 5 kW at nominal battery voltage both persist for more than 0.5 s.'),
+      R('EV.8.7.3', 'An open or shorted sensor input must also open the shutdown circuit.'),
+      R('EV.8.7.4', 'It must be testable on the car by injecting a simulated current, without powering the motors.')
     ],
     decisions: [
       {
@@ -593,30 +610,40 @@ export const enrich = {
           { name: 'VCU software only', pros: 'No extra hardware.', cons: 'The fault being guarded against may be the VCU itself: a stuck torque command or a crashed task.' },
           { name: 'Independent comparators and a timer', pros: 'Shares nothing with the VCU: its own sensors in, a relay contact out. Simple enough to verify completely on a bench.', cons: 'Thresholds are set by resistors, so changing them means soldering.' }
         ],
-        takeaway: 'It watches outcomes (brake pressure and battery current), not intentions. Whatever the software believes, if the car is braking hard and still pulling power, the loop opens.',
-        sources: ['fsae2024']
+        takeaway: 'It watches outcomes (brake pressure and battery current), not intentions. Whatever the software believes, if the car is braking hard and still pulling power, the loop opens. The 0.5 s is a persistence filter, so a brief overlap during a pedal transition does not trip it.',
+        sources: ['fsae2027']
       }
     ],
     labs: ['simulation']
   },
 
   tsal: {
-    plain: 'The light on top of the roll hoop that tells everyone around the car whether high voltage is present.',
+    plain: 'The lights on top of the roll hoop that tell everyone around the car whether high voltage is present and whether a safety device has tripped. Teams still say "TSAL"; the 2027 rules split the job into a Ready to Move Light and a Tractive System Status Indicator.',
     rules: [
-      R('EV.5.9.3', 'Red, flashing at 2 to 5 Hz, whenever voltage outside the container exceeds the High Voltage threshold.'),
-      R('EV.5.9.4', 'Green, continuously lit, when it is below.'),
-      R('EV.5.9.1', 'Hard-wired control only.'),
+      R('EV.6.2.7', 'Ready to Move Light (amber, one forward, one aft): flashes at 0.66 to 1.33 Hz when voltage outside the container is 60 V or more; clearly off below 50 V.'),
+      R('EV.6.2.6', 'It is powered by the low-voltage system and controlled directly by the measured tractive voltage with hardwired electronics; software control is not permitted.'),
+      R('EV.6.1.7', 'Tractive System Status Indicator (green right, red left): green steady with no faults; red flashing at 2.5 to 5 Hz when the BMS or IMD has tripped.'),
+      R('EV.6.3.2', 'Lamp check: every indicator lights continuously for 2 to 6 s within a second of the low-voltage master switch coming on.'),
       R('T.9.1.1', 'High Voltage means more than 60 V DC or 25 V AC RMS.')
     ],
     decisions: [
       {
-        q: 'Why is it driven by measured voltage instead of the controller\'s state?',
+        q: 'Why is the voltage light driven by measured voltage instead of the controller\'s state?',
         options: [
-          { name: 'Driven by VCU state', pros: 'One GPIO.', cons: 'Shows what the software thinks. After a relay opens, the capacitors can still hold a dangerous voltage for seconds.' },
-          { name: 'Driven by a hardwired voltage detector', pros: 'Shows what is physically there, including stored charge and a welded relay.', cons: 'Needs an isolated detection circuit on the high-voltage bus.' }
+          { name: 'Driven by VCU state', pros: 'One GPIO.', cons: 'Shows what the software thinks. After a relay opens, the capacitors can still hold a dangerous voltage for seconds. Not permitted.' },
+          { name: 'Driven by a hardwired voltage detector', pros: 'Shows what is physically there, including stored charge and a welded relay.', cons: 'Needs an isolated detection circuit on the high-voltage bus with a defined on/off band (on at 60 V, off below 50 V).' }
         ],
         takeaway: 'The light is for marshals and team members deciding whether to touch the car. It has to tell the truth even when every controller is off.',
-        sources: ['fsae2024']
+        sources: ['fsae2027']
+      },
+      {
+        q: 'Why two separate indicator systems?',
+        options: [
+          { name: 'One light for everything (the old TSAL)', pros: 'One circuit, one lamp.', cons: 'Mixes two different messages: "is it live?" and "has a safety device tripped?". Earlier rulebooks did this with red and green states of a single light.' },
+          { name: 'Voltage light plus fault indicator', pros: 'An amber light answers "is high voltage present?" from the hardware alone. A separate green/red indicator answers "is the safety system healthy?", driven by the BMS and IMD latches.', cons: 'More lamps and wiring at the top of the roll hoop, each with its own lamp check.' }
+        ],
+        takeaway: 'The 2027 split makes each lamp mean one thing. Older team cars and most online write-ups still describe the single-lamp TSAL, so expect both when reading.',
+        sources: ['fsae2027']
       }
     ]
   },
@@ -721,7 +748,8 @@ export const enrich = {
     rules: [
       R('T.9.1.2', 'Low Voltage means 60 V DC or less.'),
       R('T.9.2.2', 'The low-voltage battery needs overcurrent protection that trips at or below the cells\' maximum discharge current.'),
-      R('EV.6.6.1', 'Every electrical system, low and high voltage, needs overcurrent protection.')
+      R('EV.7.6.1', 'Every electrical system, low and high voltage, needs overcurrent protection.'),
+      R('EV.4.4.1', 'The low-voltage system is grounded to the chassis and must work with the tractive battery pack removed.')
     ],
     decisions: [
       {
@@ -752,7 +780,8 @@ export const enrich = {
   dcdc: {
     plain: 'Takes a little power from the main pack and converts it down to run the low-voltage system.',
     rules: [
-      R('EV.6.5.1', 'High-voltage and low-voltage systems must be completely galvanically separated, so this converter must be an isolated type.')
+      R('EV.7.5.1', 'High-voltage and low-voltage systems must be completely galvanically separated, so this converter must be an isolated type.'),
+      R('EV.7.5.4', 'An HV DC/DC converter is one of the few low-voltage items allowed inside the tractive battery container.')
     ],
     decisions: [
       {
@@ -761,8 +790,8 @@ export const enrich = {
           { name: 'Battery only', pros: 'Simple and naturally isolated from the pack.', cons: 'Must be big enough for the whole event and charged between runs.' },
           { name: 'Battery plus isolated DC/DC', pros: 'A small battery starts the car; the converter carries pumps and fans once high voltage is on.', cons: 'Another high-voltage component to fuse, enclose and isolate.' }
         ],
-        takeaway: 'A low-voltage battery is needed either way: something has to power the controllers and close the relays before any high voltage exists.',
-        sources: ['fsae2024']
+        takeaway: 'A low-voltage battery is needed either way: the rules require the low-voltage system to work with the pack removed, and something has to power the controllers and close the relays before any high voltage exists.',
+        sources: ['fsae2027']
       }
     ],
     cases: [
@@ -773,7 +802,9 @@ export const enrich = {
   sensors: {
     plain: 'The thermistors, pressure sensors and voltage taps that let the controllers see what is happening.',
     rules: [
-      R('EV.7.5.5', 'Temperature of at least 20% of lithium cells must be monitored, evenly distributed.'),
+      R('EV.8.5.5', 'Temperature of at least 20% of lithium cells must be monitored, equally distributed.'),
+      R('EV.8.5.3', 'Cell temperature is measured at the negative terminal, with the sensor in direct contact with it or within 10 mm on the busbar.'),
+      R('EV.8.5.7', 'Temperature sensors need electrical isolation between sensor and cell or in the sensing circuit.'),
       R('T.4.3.3', 'A brake sensor failure lasting more than 100 ms must cut motor power.')
     ],
     decisions: [
@@ -784,19 +815,20 @@ export const enrich = {
           { name: 'Digital temperature IC', pros: 'Calibrated, with a digital output.', cons: 'A data bus running through a high-voltage pack, and more cost per point.' },
           { name: 'Thermocouple', pros: 'Very wide range.', cons: 'Microvolt signals need amplification; overkill below 100 °C.' }
         ],
-        takeaway: 'Thermistors on the monitor IC are the norm because the measurement stays local to the segment and crosses the isolation barrier as data.',
+        takeaway: 'Thermistors on the monitor IC are the norm because the measurement stays local to the module and crosses the isolation barrier as data. Isolation between the sensor and the cell terminal is a rule, not an option.',
         principle: true
       }
     ],
     cases: [
-      { team: 'Virginia Motorsports', text: '48 thermistors, six per segment, read by the cell-monitor ICs.', source: 'vmsBms' }
+      { team: 'Virginia Motorsports', text: '48 thermistors, six per segment (module), read by the cell-monitor ICs.', source: 'vmsBms' }
     ]
   },
 
   cooling: {
     plain: 'Pump, radiator and fans that carry heat away from the motor, inverter and sometimes the battery.',
     rules: [
-      R('EV.7.5.2', 'Cells must stay below 60 °C (or the datasheet limit if lower).')
+      R('EV.8.5.2', 'Cells must stay below 60 °C (or the datasheet limit if lower).'),
+      R('EV.7.5.4', 'Cooling fans are among the few low-voltage items allowed inside the tractive battery container.')
     ],
     decisions: [
       {
@@ -818,8 +850,9 @@ export const enrich = {
   dashboard: {
     plain: 'What the driver sees and hears, and the logger that records everything for later.',
     rules: [
-      R('EV.9.5.2', 'Ready-to-drive sound: continuous for 1 to 3 seconds, at least 80 dBA.'),
-      R('EV.7.3.5', 'An AMS fault must light an indicator the driver can see.')
+      R('EV.10.7.2', 'Ready to Drive sound: continuous for 1 to 3 seconds, at least 80 dBA, easily recognisable.'),
+      R('EV.8.3.6', 'The BMS indicator must be red, marked "BMS", and clearly visible to the seated driver in bright sunlight.'),
+      R('EV.8.6.6', 'The IMD indicator must be red, marked "IMD", and clearly visible to the seated driver in bright sunlight.')
     ],
     decisions: [
       {
@@ -853,16 +886,16 @@ export const added = [
   },
   {
     id: 'tsal',
-    name: 'Tractive system active light (TSAL)',
+    name: 'Status lights on the roll hoop (TSAL)',
     family: 'INDEPENDENT SAFETY',
     color: '#ef6f76',
-    summary: 'A lamp on the roll hoop: green when the car is electrically safe, flashing red when high voltage is present outside the battery container.',
-    how: 'A hardwired circuit senses the voltage on the tractive side of the isolation relays. Above the High Voltage threshold it flashes red; below, it shows steady green.',
-    inputs: ['Tractive system voltage (isolated detection)', 'Low-voltage supply'],
-    outputs: ['Red flashing or green steady light'],
-    interfaces: ['Isolated high-voltage detection circuit', 'Low-voltage lamp driver'],
-    failures: ['Lamp or driver failure', 'Detection circuit fault', 'Wrong state shown after a relay weld'],
-    design: 'The detection must sit on the vehicle side of the isolation relays, so it reports what is actually reachable outside the container.',
-    reference: 'Requirements quoted from Formula SAE Rules 2024.'
+    summary: 'Lamps on the roll hoop: an amber Ready to Move Light that flashes whenever high voltage is present outside the battery container, and a green/red Tractive System Status Indicator that turns red when the BMS or IMD has tripped.',
+    how: 'A hardwired circuit senses the voltage on the vehicle side of the isolation relays and flashes the amber lights at 0.66 to 1.33 Hz above 60 V. A separate indicator shows steady green while no fault is latched and flashing red at 2.5 to 5 Hz once the BMS or IMD has opened the shutdown circuit. Every lamp lights for 2 to 6 s as a lamp check when the low-voltage system comes on.',
+    inputs: ['Tractive system voltage (isolated detection)', 'BMS and IMD fault latches', 'Low-voltage supply'],
+    outputs: ['Amber flashing (HV present)', 'Green steady or red flashing (fault)'],
+    interfaces: ['Isolated high-voltage detection circuit', 'Low-voltage lamp drivers', 'Lamp-check circuit or OR gate'],
+    failures: ['Lamp or driver failure', 'Detection circuit fault', 'Wrong state shown after a relay weld', 'Lamp check masking a dead lamp'],
+    design: 'The voltage detection must sit on the vehicle side of the isolation relays, so it reports what is actually reachable outside the container. Only the lamp check may use software.',
+    reference: 'Requirements quoted from Formula SAE Rules 2027 V1.0 (EV.6). Older editions specified a single red/green TSAL.'
   }
 ];

@@ -2,8 +2,11 @@
 // text exactly as it appears in content; it is used for inline tooltips.
 export const glossary = [
   ['ADC', 'Analogue-to-digital converter. Turns a voltage into a number.'],
-  ['AIR', 'Accumulator isolation relay. One of the two high-voltage contactors that connect the battery to the car.'],
-  ['AMS', 'Accumulator management system. The rulebook name for the BMS.'],
+  ['AIR', 'Accumulator isolation relay. The pre-2027 rulebook name for the isolation relays (IR), the two high-voltage contactors that connect the battery to the car.'],
+  ['AMS', 'Accumulator management system. The pre-2027 rulebook name for the BMS.'],
+  ['accumulator', 'The pre-2027 rulebook name for the tractive battery, the high-voltage pack.'],
+  ['segment', 'The pre-2027 rulebook name for a module: a serviceable block of cells under 120 V, 6 MJ and (since 2027) 12 kg.'],
+  ['module', 'A serviceable block of cells inside the tractive battery, limited to 120 V, 6 MJ and 12 kg. Older rulebooks said segment.'],
   ['APPS', 'Accelerator pedal position sensor.'],
   ['BMS', 'Battery management system.'],
   ['BOTS', 'Brake over-travel switch. Opens the shutdown circuit if the brake pedal travels too far, which means the brakes have failed.'],
@@ -29,7 +32,8 @@ export const glossary = [
   ['SDC', 'Shutdown circuit. The hardwired safety loop.'],
   ['SOC', 'State of charge. How full the battery is.'],
   ['SPI', 'Serial peripheral interface. A short-range bus between chips on a board.'],
-  ['TSAL', 'Tractive system active light.'],
+  ['TSAL', 'Tractive system active light. Teams\' name for the roll-hoop lights; the 2027 rules split it into a Ready to Move Light and a Tractive System Status Indicator.'],
+  ['IR', 'Isolation relay. One of the two high-voltage contactors that connect the battery to the car (older rulebooks: AIR).'],
   ['TSMS', 'Tractive system master switch.'],
   ['VCU', 'Vehicle control unit. The car\'s main controller.']
 ].map(([term, meaning]) => ({ term, meaning }));

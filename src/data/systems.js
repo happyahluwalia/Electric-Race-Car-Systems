@@ -15,7 +15,7 @@ export const systems = [
     ],
     parts: ['cell', 'accumulator', 'hvfuse', 'air', 'precharge', 'dcLink', 'inverter', 'motor'],
     labs: ['pack', 'precharge', 'powertrain'],
-    sources: ['fsae2024']
+    sources: ['fsae2027']
   },
   {
     id: 'bms',
@@ -24,15 +24,15 @@ export const systems = [
     short: 'Battery mgmt',
     color: '#4fcf9f',
     question: 'How does the car know every cell is safe?',
-    intro: 'Monitor chips sit on each battery segment and measure every cell voltage and a share of the temperatures. They pass the readings along an isolated two-wire link to one microcontroller, which decides whether the pack may keep running.',
+    intro: 'Monitor chips sit on each battery module and measure every cell voltage and a share of the temperatures. They pass the readings along an isolated two-wire link to one microcontroller, which decides whether the pack may keep running.',
     ideas: [
       'Measuring, deciding and acting are three separate jobs: monitor IC, BMS firmware, shutdown output.',
       'A reading only counts if it is fresh and passed its error check. Missing data is treated as a fault, never as "probably fine".',
-      'The rules call this the Accumulator Management System (AMS). It must be able to open the shutdown circuit by itself.'
+      'The 2027 rules call it the BMS; older editions said Accumulator Management System (AMS). It must be able to open the shutdown circuit by itself, and a missing measurement counts as a fault.'
     ],
     parts: ['cell', 'cellmonitor', 'bms', 'packcurrent'],
     labs: ['frame', 'bms', 'pack'],
-    sources: ['fsae2024', 'vmsBms']
+    sources: ['fsae2027', 'vmsBms']
   },
   {
     id: 'powertrain',
@@ -66,7 +66,7 @@ export const systems = [
     ],
     parts: ['apps', 'sensors', 'vcu', 'dashboard'],
     labs: ['vcu', 'simulation', 'pinout'],
-    sources: ['fsae2024', 'evEcu']
+    sources: ['fsae2027', 'evEcu']
   },
   {
     id: 'comms',
@@ -95,12 +95,12 @@ export const systems = [
     intro: 'One hardwired loop of switches and relay contacts feeds the coils of the isolation relays. If anything in the loop opens, the coils lose power and the battery disconnects. No software sits in that path.',
     ideas: [
       'The shutdown circuit is a wire, not a message. CAN only reports what happened.',
-      'Three independent watchers can open it: the battery monitor (AMS), the insulation monitor (IMD) and the brake plausibility device (BSPD).',
+      'Three independent watchers can open it: the battery management system (BMS), the insulation monitor (IMD) and the brake plausibility device (BSPD).',
       'After one of those three trips, only a person at the car can reset it.'
     ],
     parts: ['shutdown', 'imd', 'bspd', 'contactorCoil', 'air', 'tsal'],
     labs: ['simulation'],
-    sources: ['fsae2024']
+    sources: ['fsae2027']
   },
   {
     id: 'lv',
@@ -117,7 +117,7 @@ export const systems = [
     ],
     parts: ['lv', 'dcdc'],
     labs: ['pinout'],
-    sources: ['fsae2024']
+    sources: ['fsae2027']
   },
   {
     id: 'thermal',
@@ -134,7 +134,7 @@ export const systems = [
     ],
     parts: ['cooling', 'sensors'],
     labs: ['powertrain'],
-    sources: ['fsae2024']
+    sources: ['fsae2027']
   }
 ];
 

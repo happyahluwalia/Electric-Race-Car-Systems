@@ -24,7 +24,7 @@ Every view has its own URL, for example `/system/bms/cellmonitor` or `/journey/p
 
 Three kinds of statement appear and each is labelled:
 
-1. **Rules** are quoted with their rule number from *Formula SAE Rules 2024 V1.0*. Rules change every season; read the edition for your event.
+1. **Rules** are quoted with their rule number from *Formula SAE Rules 2027 V1.0* (1 September 2026). Rules change every season and the 2027 edition renumbered and renamed much of the EV section; read the edition for your event.
 2. **Datasheet figures and team implementations** link to the document (Analog Devices, Texas Instruments, Bender, Molicel; Virginia Motorsports, Columbia, USC, lflaherty/ev-ecu).
 3. **General engineering reasoning** is marked as such and quotes no part-specific numbers.
 
@@ -55,7 +55,7 @@ npm run build    # tests, then production build
 ## Known limits
 
 - The 3D car is a schematic layout, not CAD, and cable routes are illustrative.
-- Rule values are from the 2024 edition only.
+- Rule values are from the 2027 edition only (V1.0). Check the latest version and the Rules FAQ for your event.
 - The simulators and calculators use illustrative values unless a source is named.
 - The DBC decoder handles basic `BO_`/`SG_` definitions only; use a full library such as cantools for real work.
 - The frame builder computes the 15-bit command check only, not the ADBMS6830B's 10-bit data check.
