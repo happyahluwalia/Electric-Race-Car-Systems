@@ -41,8 +41,8 @@ export const enrich = {
           { name: 'Pouch', pros: 'Packs tightly, wide tabs carry high current.', cons: 'Needs external compression and mechanical protection. Tab joints are harder to make well.' },
           { name: 'Prismatic', pros: 'Robust case, large capacity per cell, few connections.', cons: 'Heavier per unit of energy and usually lower power density.' }
         ],
-        takeaway: 'The choice is as much about what the team can build reliably as about the cell: spot-welding hundreds of cylinders versus clamping and joining pouch tabs.',
-        principle: true
+        takeaway: 'The choice is as much about what the team can build reliably as about the cell: spot-welding hundreds of cylinders versus clamping and joining pouch tabs. Production cars have moved the other way: a survey of 25 BEVs from 2010 to 2019 found a trend to larger and prismatic cells, which suit automated assembly and few connections rather than a student workshop.',
+        sources: ['lobberding2020', 'p45b']
       },
       {
         q: 'How many in series and in parallel?',
@@ -130,8 +130,8 @@ export const enrich = {
           { name: 'Ordinary AC-rated relay', pros: 'Cheap and small.', cons: 'AC arcs die at each zero crossing. DC has no zero crossing, so the arc can sustain and destroy the relay.' },
           { name: 'Semiconductor switch', pros: 'No arc, very fast.', cons: 'No physical air gap when off, conducts heat while on, and tends to fail short.' }
         ],
-        takeaway: 'Breaking DC is the hard part. A contactor rated for the full pack voltage and fault current is the only option that also leaves a real gap in the circuit.',
-        principle: true
+        takeaway: 'Breaking DC is the hard part. A contactor rated for the full pack voltage and fault current is the only option that also leaves a real gap in the circuit. The TE EV200, common in student cars, is rated 12 to 900 V DC, carries 500 A and can interrupt 2000 A at 320 V DC once; its sealed contact chamber is what makes that possible, and a coil economiser cuts hold power to 1.7 W at 12 V.',
+        sources: ['ev200']
       },
       {
         q: 'Why one on each terminal instead of just one?',
@@ -159,8 +159,8 @@ export const enrich = {
           { name: 'Auxiliary contact', pros: 'A small extra switch moves with the mechanism and gives a direct logic signal.', cons: 'Shows the mechanism moved, not that the main contacts are clean.' },
           { name: 'Measure voltage on both sides', pros: 'Shows what the high-voltage circuit is really doing.', cons: 'Needs isolated voltage sensing and time for the capacitors to discharge.' }
         ],
-        takeaway: 'Good designs keep four things separate: the command, the coil current, the auxiliary contact, and the measured bus voltage. Disagreement between any two is a fault worth reporting.',
-        principle: true
+        takeaway: 'Good designs keep four things separate: the command, the coil current, the auxiliary contact, and the measured bus voltage. Disagreement between any two is a fault worth reporting. The EV200\'s optional auxiliary contact is sold for exactly this, "monitoring of power contact position".',
+        sources: ['ev200']
       }
     ]
   },
@@ -209,8 +209,8 @@ export const enrich = {
           { name: 'Film', pros: 'Low internal resistance, handles high ripple current, long life.', cons: 'Less capacitance for the volume.' },
           { name: 'Aluminium electrolytic', pros: 'A lot of capacitance in a small, cheap can.', cons: 'Higher internal resistance means more heating. Life falls quickly with temperature. Individual cans are rated below typical traction voltages, so they must be stacked in series and balanced.' }
         ],
-        takeaway: 'Traction inverters overwhelmingly use film capacitors. The job is carrying ripple current, not storing energy, and film does that with less heat.',
-        principle: true
+        takeaway: 'Traction inverters overwhelmingly use film capacitors. The job is carrying ripple current, not storing energy, and film does that with less heat: one manufacturer\'s guide credits film with about three times the ripple current capability and twice the voltage rating, which removes series stacks and balancing resistors, plus dry construction that cannot vent electrolyte.',
+        sources: ['cdeFilm']
       }
     ],
     inside: 'inverter',
@@ -232,8 +232,8 @@ export const enrich = {
           { name: 'Commercial unit', pros: 'Proven power stage and protection, documented CAN interface, support.', cons: 'Cost and mass. You work within its limits and its message set.' },
           { name: 'Team-built', pros: 'Sized exactly for the car. Enormous learning value.', cons: 'Power electronics fail destructively. A long, expensive road to something reliable.' }
         ],
-        takeaway: 'Most teams buy the inverter and put their engineering effort into the control unit, battery and integration.',
-        principle: true
+        takeaway: 'Most teams buy the inverter and put their engineering effort into the control unit, battery and integration. All three team projects in this app\'s case studies use a Cascadia Motion unit.',
+        sources: ['columbiaEv21', 'evEcu', 'uscVcu']
       },
       {
         q: 'Silicon IGBT or silicon-carbide MOSFET switches?',
@@ -241,8 +241,8 @@ export const enrich = {
           { name: 'Silicon IGBT', pros: 'Mature, rugged, lower cost.', cons: 'Loses more energy every time it switches, which limits switching frequency and adds heat.' },
           { name: 'Silicon-carbide MOSFET', pros: 'Much lower switching loss: higher efficiency, smaller cooling system.', cons: 'More expensive. Very fast voltage edges demand careful gate drive, layout and noise control.' }
         ],
-        takeaway: 'Silicon carbide is the direction of travel for new designs; IGBT units remain common because they are proven and affordable.',
-        principle: true
+        takeaway: 'Silicon carbide is the direction of travel for new designs; IGBT units remain common because they are proven and affordable. One vendor benchmark of a 25 kW inverter at 8 kHz put a 30 A SiC module against a 100 A IGBT module and reported a 77% smaller heat sink and about 1.1% higher efficiency, with the SiC part costing more up front.',
+        sources: ['wolfspeedSic']
       }
     ],
     cases: [
@@ -276,8 +276,8 @@ export const enrich = {
           { name: 'Bootstrap (non-isolated) driver', pros: 'Cheap and compact. Fine for low-voltage motor drives.', cons: 'Logic and power share a ground. No barrier if the power stage fails.' },
           { name: 'Isolated driver with desaturation detection', pros: 'A barrier between control and power. Detects a short through the switch and turns it off within microseconds, before the controller could react.', cons: 'Each switch needs its own isolated supply. More parts.' }
         ],
-        takeaway: 'At traction voltages the driver is a safety component. Two things it must guarantee: the upper and lower switch of a leg are never on together (dead time), and a shorted switch is shut down faster than software could manage.',
-        principle: true
+        takeaway: 'At traction voltages the driver is a safety component. Two things it must guarantee: the upper and lower switch of a leg are never on together (dead time), and a shorted switch is shut down faster than software could manage. A representative part, TI\'s UCC21750, gives 5.7 kVrms isolation, desaturation detection with a 200 ns response and a soft turn-off, plus a Miller clamp and undervoltage lockout.',
+        sources: ['ucc21750']
       }
     ],
     inside: 'inverter'
@@ -292,8 +292,8 @@ export const enrich = {
           { name: 'Permanent-magnet synchronous', pros: 'Highest torque and efficiency for the mass.', cons: 'Needs rotor angle. Generates voltage whenever it spins, even with the inverter off. Magnets weaken if overheated.' },
           { name: 'Induction', pros: 'Rugged, no magnets, produces no voltage when unpowered.', cons: 'Lower torque for the mass, and the rotor itself heats up.' }
         ],
-        takeaway: 'Mass decides it for a race car: permanent-magnet machines dominate. The fact that a spinning magnet motor is a generator is something the rest of the high-voltage system has to be designed around.',
-        principle: true
+        takeaway: 'Mass decides it for a race car: permanent-magnet machines dominate. A comparative study finds interior-PM machines have higher power factor and efficiency than induction machines, with the caveat that magnet demagnetisation limits their overload torque. The EMRAX 208 used by Columbia is a 9.4 to 10.3 kg axial-flux PM motor with an 86 kW peak. The fact that a spinning magnet motor is a generator is something the rest of the high-voltage system has to be designed around.',
+        sources: ['gundogdu2022', 'emrax208']
       },
       {
         q: 'One motor or one per wheel?',
@@ -301,8 +301,8 @@ export const enrich = {
           { name: 'Single motor and differential', pros: 'One inverter, simple control, less to go wrong.', cons: 'No independent control of wheel torque.' },
           { name: 'Hub or per-wheel motors', pros: 'Torque vectoring and regeneration at every wheel.', cons: 'Several inverters, more unsprung mass, far more software.' }
         ],
-        takeaway: 'Per-wheel drive is faster when it works. A single motor is where almost every team starts.',
-        principle: true
+        takeaway: 'Per-wheel drive is faster when it works. A single motor is where almost every team starts, as Columbia did with one EMRAX 208 and a differential. The rules do not limit the number of motors, but motors on the uprights must have interlocked cabling that opens the shutdown circuit before the wiring fails.',
+        sources: ['fsae2027', 'columbiaEv21']
       }
     ],
     cases: [
@@ -332,8 +332,8 @@ export const enrich = {
           { name: 'Encoder', pros: 'High resolution with simple digital outputs.', cons: 'Electronics live on the hot, vibrating motor. Incremental types need an index or alignment at start-up.' },
           { name: 'Sensorless estimation', pros: 'No sensor, no cable.', cons: 'Works from the motor\'s generated voltage, which is tiny at low speed. Poor exactly where a launch needs it.' }
         ],
-        takeaway: 'Traction motors commonly use resolvers for ruggedness. Whatever is used, the angle offset between sensor and rotor must be calibrated: an error wastes current and can reverse torque.',
-        principle: true
+        takeaway: 'Traction motors commonly use resolvers for ruggedness; the EMRAX 208 is offered with either. A resolver-to-digital converter such as the AD2S1210 supplies the excitation, tracks the angle, and flags loss or degradation of the signals. Whatever is used, the angle offset between sensor and rotor must be calibrated: an error wastes current and can reverse torque.',
+        sources: ['ad2s1210', 'emrax208']
       }
     ],
     inside: 'motor'
@@ -365,7 +365,7 @@ export const enrich = {
           { name: 'A microcontroller per module on isolated CAN', pros: 'Each module works independently and can be tested by itself.', cons: 'More parts, more firmware images, more to keep in sync.' }
         ],
         takeaway: 'The link exists because each module sits at a different voltage, and the rules demand isolation at every module boundary. Plain SPI would connect those voltages together; an isolated link carries data while blocking the DC.',
-        principle: true
+        sources: ['ltc6811', 'vmsBms', 'columbiaEv21', 'fsae2027']
       },
       {
         q: 'Passive or active balancing?',
@@ -413,8 +413,8 @@ export const enrich = {
           { name: 'Commercial unit', pros: 'Works out of the box with configuration software. State-of-charge estimation and charger control included.', cons: 'Fixed wiring scheme and message set. Little insight into what it is doing.' },
           { name: 'Team-built on a monitor IC', pros: 'Fits the pack exactly. The team owns every threshold and every line of code.', cons: 'A safety-critical embedded project in its own right.' }
         ],
-        takeaway: 'Both are common. A commercial unit gets a car running; a custom one is usually justified by packaging, mass, or the wish to understand it fully.',
-        principle: true
+        takeaway: 'Both are common. A commercial unit gets a car running; a custom one is usually justified by packaging, mass, or the wish to understand it fully. Of the three teams in this app, USC runs an Orion BMS while Virginia Motorsports and Columbia built their own.',
+        sources: ['uscVcu', 'vmsBms', 'columbiaEv21']
       },
       {
         q: 'How should a battery fault stop the car?',
@@ -432,8 +432,8 @@ export const enrich = {
           { name: 'Counting current in and out', pros: 'Smooth and accurate over a run.', cons: 'Sensor offset accumulates. Needs a known starting point.' },
           { name: 'Model-based (for example a Kalman filter)', pros: 'Combines both and corrects drift.', cons: 'Needs a characterised cell model and more processing.' }
         ],
-        takeaway: 'Counting current, corrected by voltage whenever the pack has rested, is the usual practical compromise.',
-        principle: true
+        takeaway: 'Counting current, corrected by voltage whenever the pack has rested, is the usual practical compromise; the standard university treatment (Plett) starts with exactly those two simple estimators and their limits before moving to Kalman filters, and spends time on what a biased current sensor does to the estimate. LEM, for example, sells a sensor family specifically for state-of-charge estimation, specified by its low offset.',
+        sources: ['plettSoc', 'lemSensors']
       }
     ],
     cases: [
@@ -468,8 +468,8 @@ export const enrich = {
           { name: 'Open-loop Hall sensor', pros: 'Clips around the cable. Isolated by nature, cheap, no added resistance.', cons: 'Offset drifts with temperature, which hurts accuracy at low current.' },
           { name: 'Closed-loop or fluxgate sensor', pros: 'Isolated and accurate.', cons: 'Larger, more expensive, draws more supply current.' }
         ],
-        takeaway: 'The use decides: state-of-charge estimation needs low offset (shunt or fluxgate); protection and the brake plausibility device only need a fast, isolated signal (Hall is fine).',
-        principle: true
+        takeaway: 'The use decides: state-of-charge estimation needs low offset (shunt, fluxgate, or the newer closed-loop Hall parts whose offset drift is in the single-digit ppm/°C range); protection and the brake plausibility device only need a fast, isolated signal, and ev-ecu reserves a plain analogue input for exactly that.',
+        sources: ['lemClosedLoop', 'evEcu']
       }
     ],
     cases: [
@@ -493,8 +493,8 @@ export const enrich = {
           { name: 'Teensy 4.1 (NXP i.MX RT)', pros: 'Very fast and quick to get running with Arduino-style tooling.', cons: 'A hobbyist board form factor. Fewer production-style debugging tools.' },
           { name: 'Control-oriented MCU (for example TI C2000)', pros: 'Peripherals designed for control loops and power electronics.', cons: 'Smaller community and steeper tooling.' }
         ],
-        takeaway: 'A control unit needs CAN, a handful of analogue inputs and timers. Almost any modern 32-bit MCU has the performance; teams choose on peripherals, tools and what the last generation of students already knew.',
-        principle: true
+        takeaway: 'A control unit needs CAN, a handful of analogue inputs and timers. Almost any modern 32-bit MCU has the performance; teams choose on peripherals, tools and what the last generation of students already knew. All three appear in the case studies: STM32 at ev-ecu and USC, a Teensy 4.1 at Virginia Motorsports, a TI C2000 as Columbia\'s BMS master.',
+        sources: ['evEcu', 'uscVcu', 'vmsBms', 'columbiaEv21']
       },
       {
         q: 'Super-loop or real-time operating system?',
@@ -502,8 +502,8 @@ export const enrich = {
           { name: 'Single loop', pros: 'Easy to reason about. No shared-data hazards.', cons: 'Every job waits for every other. Timing drifts as features are added.' },
           { name: 'RTOS tasks', pros: 'Each job gets its own period and priority. Safety checks can pre-empt logging.', cons: 'Shared data needs protection. Priority mistakes cause subtle bugs.' }
         ],
-        takeaway: 'Once the firmware has several jobs with different deadlines (pedal sampling, CAN, state machine, logging) an RTOS pays for itself.',
-        principle: true
+        takeaway: 'Once the firmware has several jobs with different deadlines (pedal sampling, CAN, state machine, logging) an RTOS pays for itself. FreeRTOS\'s own FAQ puts it the same way: you do not need an RTOS to write good embedded software, but as the application grows its services become beneficial. All three team firmwares in this app run FreeRTOS.',
+        sources: ['freertosFaq', 'evEcu', 'uscVcu', 'vmsBms']
       },
       {
         q: 'How should the code be layered?',
@@ -512,7 +512,7 @@ export const enrich = {
           { name: 'Vehicle logic → device drivers → peripheral drivers', pros: 'Vehicle logic speaks in torque and states; a device driver translates to one product\'s CAN messages; a peripheral driver owns the registers.', cons: 'More files and interfaces up front.' }
         ],
         takeaway: 'Layering is what lets you test vehicle logic on a PC and swap an inverter without touching the state machine.',
-        principle: true
+        sources: ['evEcu']
       }
     ],
     cases: [
@@ -555,8 +555,8 @@ export const enrich = {
           { name: 'Potentiometer', pros: 'Cheap and ratiometric.', cons: 'A sliding contact wears and gets noisy.' },
           { name: 'Hall-effect (contactless)', pros: 'No wear. Dual-output parts are widely available.', cons: 'Needs a magnet and a clean supply.' }
         ],
-        takeaway: 'Contactless sensors are standard in road cars for exactly this job.',
-        principle: true
+        takeaway: 'Contactless sensors are standard in road cars for exactly this job: pedal sensor ICs are sold as fully redundant dual-output Hall devices with built-in failure diagnostics, which maps directly onto the two-sensor rule.',
+        sources: ['as5262']
       }
     ],
     cases: [
@@ -702,7 +702,7 @@ export const enrich = {
           { name: 'A DBC file', pros: 'One description of every message: identifier, bit position, length, byte order, scale, offset and unit. Code and logging tools are generated from it.', cons: 'Has to be kept current and shared.' }
         ],
         takeaway: 'An identifier and eight bytes mean nothing without the database. Never guess a layout from a message name.',
-        principle: true
+        sources: ['cssDbc']
       }
     ],
     cases: [
@@ -732,7 +732,7 @@ export const enrich = {
           { name: 'Interrupt into a queue', pros: 'Each frame is copied out the moment it arrives; a task decodes it later.', cons: 'The interrupt must stay short, and the queue needs sizing.' }
         ],
         takeaway: 'Interrupt plus queue is the standard pattern: the interrupt only moves bytes, tasks do the thinking.',
-        principle: true
+        sources: ['vmsBms', 'uscVcu', 'evEcu']
       },
       {
         q: 'What should happen at bus-off?',
@@ -740,8 +740,8 @@ export const enrich = {
           { name: 'Recover automatically and carry on', pros: 'Rides through a brief disturbance.', cons: 'Can hide a real wiring fault and keep disturbing the bus.' },
           { name: 'Treat as a fault and recover deliberately', pros: 'The vehicle state machine knows communication was lost and can respond safely.', cons: 'More logic to write.' }
         ],
-        takeaway: 'The controller counts its own transmit errors and removes itself from the bus when they pile up. Firmware should watch those counters; they are the earliest warning of a physical-layer problem.',
-        principle: true
+        takeaway: 'The controller keeps a transmit and a receive error counter. Above 127 it goes error-passive; when the transmit counter passes 255 it goes bus-off and stops transmitting until it has seen 128 sequences of eleven recessive bits. Firmware should watch those counters; they are the earliest warning of a physical-layer problem.',
+        sources: ['can20']
       }
     ],
     cases: [
@@ -782,8 +782,8 @@ export const enrich = {
           { name: '12 V', pros: 'The widest choice of automotive pumps, fans, relays and sensors.', cons: 'Twice the current for the same power, so heavier wire and more voltage drop.' },
           { name: '24 V', pros: 'Half the current. Contactor coils and industrial parts are readily available.', cons: 'Fewer automotive accessories. Sensors still need a regulated 5 V rail.' }
         ],
-        takeaway: 'Either works. What matters is that every load, including the isolation relay coils and the insulation monitor, is rated for the one you choose.',
-        principle: true
+        takeaway: 'Either works. What matters is that every load, including the isolation relay coils and the insulation monitor, is rated for the one you choose: the Bender IR155 comes in 12 V and 24 V supply variants and the EV200 contactor coil is offered for both. ev-ecu chose 24 V.',
+        sources: ['evEcu', 'ir155', 'ev200']
       },
       {
         q: 'Fuses or electronic power switches?',
@@ -792,7 +792,7 @@ export const enrich = {
           { name: 'Smart high-side switches (a power distribution module)', pros: 'Each output is switched and current-limited by a controller, which can report faults and shed loads.', cons: 'More design work, and it puts software in the supply path.' }
         ],
         takeaway: 'Whichever is used, check supply voltage first when several unrelated faults appear together. One controller browning out looks like a dozen separate problems.',
-        principle: true
+        sources: ['evEcu']
       }
     ],
     cases: [
@@ -839,8 +839,8 @@ export const enrich = {
           { name: 'Digital temperature IC', pros: 'Calibrated, with a digital output.', cons: 'A data bus running through a high-voltage pack, and more cost per point.' },
           { name: 'Thermocouple', pros: 'Very wide range.', cons: 'Microvolt signals need amplification; overkill below 100 °C.' }
         ],
-        takeaway: 'Thermistors on the monitor IC are the norm because the measurement stays local to the module and crosses the isolation barrier as data. Isolation between the sensor and the cell terminal is a rule, not an option.',
-        principle: true
+        takeaway: 'Thermistors on the monitor IC are the norm because the measurement stays local to the module and crosses the isolation barrier as data. Isolation between the sensor and the cell terminal is a rule, not an option. Linearising the NTC is a firmware job: a lookup table (as USC does) or the Steinhart-Hart equation, which needs natural logarithms the table avoids.',
+        sources: ['uscVcu', 'vmsBms', 'tiSnoaa12']
       }
     ],
     cases: [
@@ -861,8 +861,8 @@ export const enrich = {
           { name: 'Air', pros: 'No pump, hoses or coolant.', cons: 'Cannot remove enough heat from a compact high-power motor or inverter for long.' },
           { name: 'Liquid loop', pros: 'Moves kilowatts from a small surface to a radiator placed in clean airflow.', cons: 'Mass, leaks, and a pump that becomes a single point of failure.' }
         ],
-        takeaway: 'Compact traction motors and inverters are almost always liquid cooled. The control question is what to do when cooling falls behind: reduce torque early and smoothly instead of tripping at the limit.',
-        principle: true
+        takeaway: 'Compact traction motors and inverters are almost always liquid cooled. The EMRAX 208 data sheet shows why: the same motor is rated 33 kW continuous air-cooled, 47 kW liquid-cooled and 52 kW with both, at an identical 86 kW peak. The control question is what to do when cooling falls behind: reduce torque early and smoothly instead of tripping at the limit.',
+        sources: ['emrax208', 'columbiaEv21']
       }
     ],
     cases: [
@@ -898,8 +898,8 @@ export const enrich = {
           { name: 'Draw them on the screen', pros: 'Flexible. No extra wiring.', cons: 'If the display or its CAN link fails, the warning disappears with it.' },
           { name: 'Dedicated lamps driven by the fault latch', pros: 'Stay lit whenever the latch is tripped, whatever the display is doing.', cons: 'A few more wires to the cockpit.' }
         ],
-        takeaway: 'Use the screen for information and dedicated lamps for safety status. On the screen, show the age of each value: an old number that looks plausible is worse than a blank.',
-        principle: true
+        takeaway: 'Use the screen for information and dedicated lamps for safety status; the rules settle it anyway by requiring separate red lamps marked BMS and IMD that stay lit until a manual reset. On the screen, show the age of each value: an old number that looks plausible is worse than a blank.',
+        sources: ['fsae2027']
       }
     ]
   }
