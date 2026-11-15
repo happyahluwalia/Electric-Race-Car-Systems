@@ -96,7 +96,7 @@ export const checks = {
   ],
   vcu: [
     Q('When does the APPS/brake plausibility check cut motor power?',
-      ['Brake on and accelerator over 25% travel', 'Brake on and accelerator over 5%', 'Any brake application', 'Accelerator over 90%'], 0, 'EV.4.7. Power stays off until the pedal is back below 5%.'),
+      ['Brake on and accelerator over 25% travel', 'Brake on and accelerator over 5%', 'Any brake application', 'Accelerator over 90%'], 0, 'EV.4.7.1 and EV.4.7.2. Power stays off until the pedal is back below 5%.'),
     Q('What three conditions are needed to enter Ready to Drive?',
       ['Tractive system active, brake pressed and held, and a manual driver action', 'Low voltage on and a CAN heartbeat', 'Pedal at 0% and the precharge done', 'A green status light and the master switch'], 0, 'EV.10.6.2.')
   ],

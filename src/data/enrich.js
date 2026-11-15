@@ -466,7 +466,8 @@ export const enrich = {
   packcurrent: {
     plain: 'Measures the current flowing in or out of the pack.',
     rules: [
-      R('EV.3.2.4', 'All tractive system power must flow through the organiser\'s energy meter, which is what checks the 80 kW limit.'),
+      R('EV.3.2.4', 'All tractive system power must flow through the organiser\'s energy meter.'),
+      R('EV.3.3.1', 'The power the energy meter measures must not exceed 80 kW.'),
       R('EV.3.4.1', 'A violation is power or voltage over the limit for 100 ms continuously, or over a 500 ms moving average.')
     ],
     decisions: [
@@ -490,7 +491,8 @@ export const enrich = {
     plain: 'The car\'s main computer. It reads the driver, checks everything is ready, and asks the inverter for torque.',
     rules: [
       R('T.4.2.5', 'If the two pedal sensors disagree for more than 100 ms, power to the motors must stop immediately.'),
-      R('EV.4.7.2', 'If the brakes are on while the accelerator is past 25% travel, motor power is cut and stays off until the pedal is below 5%.'),
+      R('EV.4.7.1', 'The controller must watch for the mechanical brakes engaged while the accelerator signals more than 25% travel.'),
+      R('EV.4.7.2', 'If both happen together, motor power is cut immediately and stays off until the pedal is back below 5%.'),
       R('EV.10.6.2', 'Ready to Drive needs all three: tractive system active, the brake pedal held, and a manual driver action such as a button.'),
       R('EV.10.2', 'Systems must energise in order: low voltage, then tractive system active, then Ready to Drive.')
     ],
@@ -836,7 +838,8 @@ export const enrich = {
     plain: 'The thermistors, pressure sensors and voltage taps that let the controllers see what is happening.',
     rules: [
       R('EV.8.5.5', 'Temperature of at least 20% of lithium cells must be monitored, equally distributed.'),
-      R('EV.8.5.3', 'Cell temperature is measured at the negative terminal, with the sensor in direct contact with it or within 10 mm on the busbar.'),
+      R('EV.8.5.3', 'Cell temperature is measured at the negative terminal of the cell.'),
+      R('EV.8.5.4', 'The sensor touches the negative terminal itself, or its busbar less than 10 mm from the weld or clamp.'),
       R('EV.8.5.7', 'Temperature sensors need electrical isolation between sensor and cell or in the sensing circuit.'),
       R('T.4.3.3', 'A brake sensor failure lasting more than 100 ms must cut motor power.')
     ],

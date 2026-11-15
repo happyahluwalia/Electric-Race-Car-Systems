@@ -181,7 +181,7 @@ export default function Explore() {
             <CarScene systemId={system?.id || null} partIds={partIds} contextIds={system?.context || (journey ? ['accumulator'] : null)} selected={partId || null} numbers={numbers} trace={trace} onSelect={select} resetKey={resetKey} />
           </Suspense>
         </SceneBoundary>
-        <p className="hint">Drag to rotate · scroll to zoom · click a part</p>
+        <p className="hint">Drag to rotate · scroll to zoom · click a part, or use the numbered list on the left</p>
         {!system && !journey && <ul className="legend">{systems.map(s => <li key={s.id}><Link to={`/system/${s.id}`} style={{ '--c': s.color }}><i className="dot" />{s.short}</Link></li>)}</ul>}
       </section>
 
