@@ -7,7 +7,8 @@
     "dev": "vite --host 0.0.0.0",
     "build": "npm test && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "node --test"
+    "test": "node --test",
+    "model": "python3 model/build_car.py && npx --yes @gltf-transform/cli weld public/car.glb public/car.glb && npx --yes @gltf-transform/cli quantize public/car.glb public/car.glb && npx --yes @gltf-transform/cli meshopt public/car.glb public/car.glb --level medium"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
